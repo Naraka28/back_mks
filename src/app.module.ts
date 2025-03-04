@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -6,7 +7,6 @@ import { DataSource } from 'typeorm';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entity/user.entity';
 import { UsersController } from './users/users.controller';
-import 'dotenv/config';
 import { UsersService } from './users/users.service';
 import { TicketsModule } from './tickets/tickets.module';
 import { OrdersService } from './orders/orders.service';
@@ -53,7 +53,7 @@ import { ItemToppingsModule } from './item_toppings/item_toppings.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, ],
       synchronize: true,
       autoLoadEntities: true,
     }),
