@@ -13,5 +13,4 @@ export class User {
   password: number;
   @OneToOne(() => Roles)
   role: Roles;
-  
 }
