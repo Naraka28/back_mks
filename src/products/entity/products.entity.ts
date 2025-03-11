@@ -1,4 +1,3 @@
-import { Allowed_Flavors } from 'src/allowed_flavors/entity/allowed_flavors.entity';
 import { Flavours } from 'src/flavours/entity/flavours.entity';
 import { Grains } from 'src/grains/entity/grains.entity';
 import { Milks } from 'src/milks/entity/milks.entity';
@@ -22,23 +21,23 @@ export class Products {
     image: string;
 
     @ManyToMany(() => Flavours)
-    @JoinTable()  // Esto crea automáticamente la tabla intermedia `products_flavours`
+    @JoinTable({name:"allowedFlavours"})  // Esto crea automáticamente la tabla intermedia `products_flavours`
     flavours: Flavours[];
 
     @ManyToMany(() => Sizes)
-    @JoinTable()  // Esto crea automáticamente la tabla intermedia `products_sizes`
+    @JoinTable({name:"allowedSizes"})  // Esto crea automáticamente la tabla intermedia `products_sizes`
     sizes: Sizes[];
     
     @ManyToMany(() => Temps)
-    @JoinTable()  // Esto crea automáticamente la tabla intermedia `products_sizes`
+    @JoinTable({name:"allowedTemps"})  // Esto crea automáticamente la tabla intermedia `products_sizes`
     temp: Temps[];
     
     @ManyToMany(() => Toppings)
-    @JoinTable()  // Esto crea automáticamente la tabla intermedia `products_sizes`
+    @JoinTable({name:"allowedToppings"})  // Esto crea automáticamente la tabla intermedia `products_sizes`
     toppings: Toppings[];
 
     @ManyToMany(() => Milks)
-    @JoinTable()  // Esto crea automáticamente la tabla intermedia `products_sizes`
+    @JoinTable({name:"allowedMilks"})  // Esto crea automáticamente la tabla intermedia `products_sizes`
     milks: Milks[];
     
     // @ManyToMany(() => Grains)
