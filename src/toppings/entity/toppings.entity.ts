@@ -1,4 +1,11 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Orders } from 'src/orders/entity/orders.entity';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Toppings {
@@ -8,5 +15,6 @@ export class Toppings {
   name: string;
   @Column()
   price: number;
- 
+  @ManyToMany(() => Orders)
+  orders: Orders[];
 }

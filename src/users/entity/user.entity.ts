@@ -1,5 +1,13 @@
 import { Roles } from 'src/roles/entity/roles.entity';
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Tickets } from 'src/tickets/entity/tickets.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -12,5 +20,7 @@ export class User {
   @Column()
   password: number;
   @ManyToOne(() => Roles, (role) => role.users, { nullable: false })
-    role: Roles;
+  role: Roles;
+  @OneToMany(() => Tickets, (ticket) => ticket.cashier)
+  tickets: Tickets[];
 }
