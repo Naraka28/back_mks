@@ -6,6 +6,6 @@ export class Product_Type {
   id: number;
   @Column()
   type: string;
- 
+  
  
 }
