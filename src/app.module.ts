@@ -15,6 +15,15 @@ import { MilksModule } from './milks/milks.module';
 import { ToppingsModule } from './toppings/toppings.module';
 import { FlavoursModule } from './flavours/flavours.module';
 import { Roles } from './roles/entity/roles.entity';
+import { Flavours } from './flavours/entity/flavours.entity';
+import { Milks } from './milks/entity/milks.entity';
+import { Orders } from './orders/entity/orders.entity';
+import { Product_Type } from './product_types/entity/product_types.entity';
+import { Products } from './products/entity/products.entity';
+import { Sizes } from './sizes/entity/sizes.entity';
+import { Temps } from './temps/entity/temps.entity';
+import { Tickets } from './tickets/entity/tickets.entity';
+import { Toppings } from './toppings/entity/toppings.entity';
 
 @Module({
   imports: [
@@ -26,7 +35,19 @@ import { Roles } from './roles/entity/roles.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Roles],
+      entities: [
+        User,
+        Roles,
+        Flavours,
+        Milks,
+        Orders,
+        Product_Type,
+        Products,
+        Sizes,
+        Temps,
+        Tickets,
+        Toppings,
+      ],
       synchronize: true,
       autoLoadEntities: true,
     }),
