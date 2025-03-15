@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity,  PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Flavours {
@@ -8,5 +8,7 @@ export class Flavours {
   name: string;
   @Column()
   price: number;
- 
+  
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
