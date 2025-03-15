@@ -8,6 +8,7 @@ export class Flavours {
   name: string;
   @Column()
   price: number;
+  
   @DeleteDateColumn()
   deletedAt: Date;
 }

@@ -16,30 +16,34 @@ export class FlavoursService {
     private FlavoursRepository: Repository<Flavours>,
   ) {}
 
-  async create(createFlavourDto:CreateFlavourDto){
+  async createFlavour(createFlavourDto:CreateFlavourDto){
     const newflavour=this.FlavoursRepository.create(createFlavourDto);
     try {
       return await this.FlavoursRepository.save(newflavour);   
     } catch (error) {
-      
+      console.error('Error al crear :', error);
+      throw new HttpException('No se pudo crear el sabor', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async update(id:number, updateFlavourDto:CreateFlavourDto){
+  async updateFlavour(id:number, updateFlavourDto:CreateFlavourDto){
     try {
       await this.FlavoursRepository.update(id, updateFlavourDto);
       return await this.FlavoursRepository.findOne({ where: { id } });
     } catch (error) {
-      console.error('Error al actualizar el sabor:', error);
+      console.error('Error al actualizar el id:', error);
       throw new HttpException('No se pudo actualizar el sabor', HttpStatus.INTERNAL_SERVER_ERROR);
     }    
   }
   
 
-
-  async delete(id:number){
-   // await this.FlavoursRepository.softDelete(id);
-    //await this.FlavoursRepository.softRemove(id);
+  async deleteFlavour(id:number){
+    try {
+      await this.FlavoursRepository.softDelete(id);
+    } catch (error) {
+      console.error('Error al eliminar el id:', error);
+      throw new HttpException('No se pudo eliminar el sabor', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 
