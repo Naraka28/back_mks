@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { FlavoursService } from './flavours.service';
 import { CreateFlavourDto } from './dto/create-flavour.dto';
 
@@ -19,7 +30,10 @@ export class FlavoursController {
       if (error instanceof HttpException) {
         throw error; // Re-throw custom HttpException
       }
-      throw new HttpException('Couldn`t find flavours', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Couldn`t find flavours',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -36,10 +50,13 @@ export class FlavoursController {
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new HttpException('Couldn`t find flavour', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Couldn`t find flavour',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-  
+
   @Post('create')
   async createFlavour(@Body() createFlavourDto: CreateFlavourDto) {
     try {
@@ -49,18 +66,27 @@ export class FlavoursController {
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new HttpException('Couldn´t create flavour', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Couldn´t create flavour',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Patch('update/:id')
   async updateFlavour(
-    @Param('id', ParseIntPipe) id: number, 
-    @Body() updateFlavourDto: CreateFlavourDto // Cambié a UpdateFlavourDto
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateFlavourDto: CreateFlavourDto, // Cambié a UpdateFlavourDto
   ) {
     try {
-      const updatedFlavour = await this.flavourService.updateFlavour(id, updateFlavourDto);
+      const updatedFlavour = await this.flavourService.updateFlavour(
+        id,
+        updateFlavourDto,
+      );
       if (!updatedFlavour) {
-        throw new HttpException('Flavour not found or couldn\'t update', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          "Flavour not found or couldn't update",
+          HttpStatus.NOT_FOUND,
+        );
       }
       return { data: updatedFlavour };
     } catch (error) {
@@ -68,7 +94,10 @@ export class FlavoursController {
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new HttpException('Couldn’t update flavour', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Couldn’t update flavour',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   @Delete('delete/:id')
@@ -84,7 +113,10 @@ export class FlavoursController {
       if (error instanceof HttpException) {
         throw error;
       }
-      throw new HttpException('Couldn’t delete flavour', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Couldn’t delete flavour',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
