@@ -20,38 +20,34 @@ import {
 export class Products {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   name: string;
+
   @Column()
   base_price: number;
+
   @ManyToOne(() => Product_Type)
   type: Product_Type;
+  
   @Column()
   image: string;
 
   @ManyToMany(() => Flavours)
-  @JoinTable({ name: 'allowedFlavours' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   flavours: Flavours[];
 
   @ManyToMany(() => Sizes)
-  @JoinTable({ name: 'allowedSizes' }) // Esto crea automáticamente la tabla intermedia `products_sizes`
   sizes: Sizes[];
 
   @ManyToMany(() => Temps)
-  @JoinTable({ name: 'allowedTemps' }) // Esto crea automáticamente la tabla intermedia `products_sizes`
   temp: Temps[];
 
   @ManyToMany(() => Toppings)
-  @JoinTable({ name: 'allowedToppings' }) // Esto crea automáticamente la tabla intermedia `products_sizes`
   toppings: Toppings[];
 
   @ManyToMany(() => Milks)
-  @JoinTable({ name: 'allowedMilks' }) // Esto crea automáticamente la tabla intermedia `products_sizes`
   milks: Milks[];
 
-  // @ManyToMany(() => Grains)
-  // @JoinTable()  // Esto crea automáticamente la tabla intermedia `products_sizes`
-  // grains: Grains[];
   @OneToMany(() => Orders, (order) => order.product)
   order: Orders;
 }
