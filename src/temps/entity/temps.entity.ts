@@ -1,4 +1,5 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Products } from 'src/products/entity/products.entity';
+import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Temps {
@@ -8,5 +9,9 @@ export class Temps {
   name: string;
   @Column()
   price: number;
+
+  @ManyToMany(() => Products, (product) => product.temp)
+  @JoinTable({ name: 'allowedTemps' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
+  products: Products[];
  
 }
