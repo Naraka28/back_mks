@@ -15,7 +15,7 @@ import { CreateMilkDto } from './dto/create-milks.dto';
 
 @Controller('milks')
 export class MilksController {
-  constructor(@InjectRepository(Milks) private milksService: MilksService) {}
+  constructor(private milksService: MilksService) {}
 
   @Get()
   async getMilks(): Promise<Milks[]> {

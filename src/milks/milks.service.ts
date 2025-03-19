@@ -76,7 +76,7 @@ export class MilksService {
       if (result.affected === 0) {
         throw new NotFoundException(`Couldnt delete milk with id ${id}`);
       }
-      return { message: 'Successfully deleted milk' };
+      return { message: `Successfully deleted milk with ID ${id}` };
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Unexpected error deleting milk');
