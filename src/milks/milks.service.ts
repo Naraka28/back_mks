@@ -8,7 +8,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Milks } from './entity/milks.entity';
 import { Repository } from 'typeorm';
-import { ADDRGETNETWORKPARAMS } from 'dns';
 import { CreateMilkDto } from './dto/create-milks.dto';
 
 @Injectable()
@@ -18,7 +17,9 @@ export class MilksService {
   ) {}
   async findAll(): Promise<Milks[]> {
     try {
-      const result = await this.milksRepository.find();
+      const result = await this.milksRepository.find({
+        relations: { products: true },
+      });
       if (result.length === 0) {
         throw new NotFoundException('Milks not founded');
       }
@@ -30,7 +31,10 @@ export class MilksService {
   }
   async findOne(id: number): Promise<Milks | null> {
     try {
-      return await this.milksRepository.findOneBy({ id });
+      return await this.milksRepository.findOne({
+        where: { id },
+        relations: { products: true },
+      });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(
@@ -64,7 +68,10 @@ export class MilksService {
       if (result.affected === 0) {
         throw new NotFoundException(`Milk with ID ${id} not found`);
       }
-      return this.milksRepository.findOneBy({ id });
+      return this.milksRepository.findOne({
+        where: { id },
+        relations: { products: true },
+      });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException();

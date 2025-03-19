@@ -17,7 +17,11 @@ export class SizesService {
   ) {}
   async findAll(): Promise<Sizes[]> {
     try {
-      const result = await this.sizesRepository.find();
+      const result = await this.sizesRepository.find({
+        relations: {
+          products: true,
+        },
+      });
       if (result.length === 0) {
         throw new NotFoundException('Sizes not founded');
       }
@@ -28,7 +32,10 @@ export class SizesService {
   }
   async findOne(id: number): Promise<Sizes | null> {
     try {
-      return await this.sizesRepository.findOneBy({ id });
+      return await this.sizesRepository.findOne({
+        where: { id },
+        relations: { products: true },
+      });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(
@@ -62,7 +69,10 @@ export class SizesService {
       if (result.affected === 0) {
         throw new NotFoundException(`Size with ID ${id} not found`);
       }
-      return this.sizesRepository.findOneBy({ id });
+      return this.sizesRepository.findOne({
+        where: { id },
+        relations: { products: true },
+      });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException();
