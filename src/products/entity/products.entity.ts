@@ -1,5 +1,4 @@
 import { Flavours } from 'src/flavours/entity/flavours.entity';
-import { Grains } from 'src/grains/entity/grains.entity';
 import { Milks } from 'src/milks/entity/milks.entity';
 import { Orders } from 'src/orders/entity/orders.entity';
 import { Product_Type } from 'src/product_types/entity/product_types.entity';
@@ -29,7 +28,7 @@ export class Products {
 
   @ManyToOne(() => Product_Type)
   type: Product_Type;
-  
+
   @Column()
   image: string;
 
