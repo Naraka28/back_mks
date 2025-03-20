@@ -5,7 +5,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn
 export class Temps {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({unique: true})
   name: string;
   @Column()
   price: number;
