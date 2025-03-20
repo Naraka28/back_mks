@@ -5,7 +5,7 @@ import { Column, DeleteDateColumn, Entity,  JoinTable,  ManyToMany,  PrimaryGene
 export class Flavours {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ unique: true })
   name: string;
   @Column()
   price: number;
