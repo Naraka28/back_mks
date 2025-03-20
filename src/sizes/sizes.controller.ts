@@ -15,18 +15,22 @@ import { CreateSizeDto } from './dto/create-sizes.dto';
 @Controller('sizes')
 export class SizesController {
   constructor(private sizesService: SizesService) {}
+
   @Get()
   async getSizes(): Promise<Sizes[]> {
     return this.sizesService.findAll();
   }
+
   @Post('create')
   async createSize(@Body() createSizeDto: CreateSizeDto): Promise<Sizes> {
     return this.sizesService.createSize(createSizeDto);
   }
+  
   @Get(':id')
   async getSize(@Param('id', ParseIntPipe) id: number): Promise<Sizes | null> {
     return this.sizesService.findOne(id);
   }
+
   @Put('update/:id')
   async updateSize(
     @Param('id', ParseIntPipe) id: number,
@@ -34,6 +38,7 @@ export class SizesController {
   ): Promise<Sizes | null> {
     return this.sizesService.updateSize(id, updateSizeDto);
   }
+
   @Delete('delete/:id')
   async deleteSize(
     @Param('id', ParseIntPipe) id: number,

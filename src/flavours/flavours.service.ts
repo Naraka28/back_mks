@@ -55,13 +55,17 @@ export class FlavoursService {
       throw new HttpException('Couldn`t find flavours', HttpStatus.BAD_REQUEST);
     }
   }
-
-  async findOne(id: number): Promise<Flavours | null> {
+ async findOne(id: number): Promise<Flavours | null> {
     try {
-      return await this.FlavoursRepository.findOneBy({ id });
+      return await this.FlavoursRepository.findOne({
+        where: { id },
+        relations: { products: true },
+      });
     } catch (error) {
-      console.error('Error fetching a ', error);
-      throw new InternalServerErrorException('Error ');
+      console.error(error);
+      throw new InternalServerErrorException(
+        `Failed to retrieve flavor with ID ${id}`,
+      );
     }
   }
 }
