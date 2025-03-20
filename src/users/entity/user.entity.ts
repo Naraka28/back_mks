@@ -3,6 +3,7 @@ import { Tickets } from 'src/tickets/entity/tickets.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -20,6 +21,7 @@ export class User {
   @Column()
   password: number;
   @ManyToOne(() => Roles, (role) => role.users, { nullable: false })
+  @JoinColumn()
   role: Roles;
   @OneToMany(() => Tickets, (ticket) => ticket.cashier)
   tickets: Tickets[];
