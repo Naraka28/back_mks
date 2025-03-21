@@ -9,6 +9,7 @@ export class TempsService {
     constructor(
         @InjectRepository(Temps) private TempsRepository: Repository<Temps>,
     ){}
+
     async findAll():Promise<Temps[]> {
         try {
             const result = await this.TempsRepository.find();
@@ -30,39 +31,40 @@ export class TempsService {
         } catch (error) {
             console.error(error);
             throw new InternalServerErrorException(
-                `Failed to retrieve Topping with ID ${id}`,
+                `Failed to retrieve Temp with ID ${id}`,
             );
         }
     }
 
-    async createTopping(createTopping: CreateTempsDto): Promise<Temps> {
+    async createTemps(createTemp: CreateTempsDto): Promise<Temps> {
      try {
-           const newTopping = this.TempsRepository.create(createTopping);
-           if (!newTopping) {
-             throw new BadRequestException('Couldnt create new topping');
+           const newTemp = this.TempsRepository.create(createTemp);
+           if (!newTemp) {
+             throw new BadRequestException('Couldnt create new Temp');
            }
-           return this.TempsRepository.save(newTopping);
+           return this.TempsRepository.save(newTemp);
+           
          } catch (error) {
            console.error(error);
            if (error.code === '23505') {
-             throw new ConflictException(`Topping with name ${createTopping.name}`);
+             throw new ConflictException(`Temp with name ${createTemp.name}`);
            }
            throw new InternalServerErrorException(
-             `Unexpected error at creating new topping ${createTopping.name}`,
+             `Unexpected error at creating new Temp ${createTemp.name}`,
            );
          }
        }
     
     //Pendiente update y delete Temps
 
-      async updateTopping(
+      async updateTemp(
         id: number,
-        updateTopping: CreateTempsDto,
+        updateTemp: CreateTempsDto,
       ): Promise<Temps | null> {
         try {
-          const result = await this.TempsRepository.update(id, updateTopping);
+          const result = await this.TempsRepository.update(id, updateTemp);
           if (result.affected === 0) {
-            throw new NotFoundException(`Topping with ID ${id} not found`);
+            throw new NotFoundException(`Temp with ID ${id} not found`);
           }
           return this.TempsRepository.findOne({
             where: { id },
@@ -74,16 +76,16 @@ export class TempsService {
         }
       }
 
-      async deleteTopping(id: number): Promise<{ message: string }> {
+      async deleteTemp(id: number): Promise<{ message: string }> {
         try {
           const result = await this.TempsRepository.delete(id);
           if (result.affected === 0) {
-            throw new NotFoundException(`Couldnt delete topping with id ${id}`);
+            throw new NotFoundException(`Couldnt delete Temp with id ${id}`);
           }
-          return { message: 'Successfully deleted Topping' };
+          return { message: 'Successfully deleted Temp' };
         } catch (error) {
           console.error(error);
-          throw new InternalServerErrorException('Unexpected error deleting Topping');
+          throw new InternalServerErrorException('Unexpected error deleting Temp');
         }
       }
 }

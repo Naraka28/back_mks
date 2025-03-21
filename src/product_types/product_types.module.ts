@@ -6,7 +6,7 @@ import { ProductTypesController } from './product_types.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Product_Type])],
-    controllers: [ProductTypesService],
-    providers: [ProductTypesController],
+    controllers: [ProductTypesController],
+    providers: [ProductTypesService],
 })
-export class ProductTypesModule {}
+export class Product_TypesModule {}
