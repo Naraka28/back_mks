@@ -14,6 +14,5 @@ export class Flavours {
   @JoinTable({ name: 'allowedFlavours' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   products: Products[];
 
-  @DeleteDateColumn()
-  deletedAt: Date;
+
 }

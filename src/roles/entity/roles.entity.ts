@@ -13,6 +13,7 @@ export class Roles {
   id: number;
   @Column({ type: 'enum', enum: RoleList })
   role: RoleList;
-  @OneToMany(() => User, (user) => user.role) //es necesario cuando queremos buscar a todos los usuarios que tengan algun rol, no es estrictamente necesario utilizarlo
+  @OneToMany(() => User, (user) => user.role) 
+  //es necesario cuando queremos buscar a todos los usuarios que tengan algun rol, no es estrictamente necesario utilizarlo
   users: User[];
 }

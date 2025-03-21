@@ -24,6 +24,8 @@ import { Sizes } from './sizes/entity/sizes.entity';
 import { Temps } from './temps/entity/temps.entity';
 import { Tickets } from './tickets/entity/tickets.entity';
 import { Toppings } from './toppings/entity/toppings.entity';
+import { TempsModule } from './temps/temps.module';
+import { Product_TypesModule } from './product_types/product_types.module';
 
 @Module({
   imports: [
@@ -52,13 +54,16 @@ import { Toppings } from './toppings/entity/toppings.entity';
     }),
     UsersModule,
     TicketsModule,
+    TempsModule,
     OrdersModule,
     RolesModule,
     OrderToppingsModule,
     SizesModule,
     MilksModule,
     ToppingsModule,
+    Product_TypesModule,
     FlavoursModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

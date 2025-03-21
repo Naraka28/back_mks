@@ -11,28 +11,28 @@ export class TempsController {
       return this.tempsService.findAll();
     }
   
-    @Post('create')
-    async createTopping(@Body() createToppingDto: CreateTempsDto): Promise<Temps> {
-      return this.tempsService.createTopping(createToppingDto);
+    @Post('/create')
+    async createTemp(@Body() createTempsDto: CreateTempsDto): Promise<Temps> {
+      return this.tempsService.createTemps(createTempsDto);
     }
     
     @Get(':id')
-    async getTopping(@Param('id', ParseIntPipe) id: number): Promise<Temps | null> {
+    async getTemp(@Param('id', ParseIntPipe) id: number): Promise<Temps | null> {
       return this.tempsService.findOne(id);
     }
   
     @Put('update/:id')
-    async updateTopping(
+    async updateTemp(
       @Param('id', ParseIntPipe) id: number,
-      @Body() updateToppingDto: CreateTempsDto,
+      @Body() updateTempDto: CreateTempsDto,
     ): Promise<Temps | null> {
-      return this.tempsService.updateTopping(id, updateToppingDto);
+      return this.tempsService.updateTemp(id, updateTempDto);
     }
   
     @Delete('delete/:id')
-    async deleteTopping(
+    async deleteTemp(
       @Param('id', ParseIntPipe) id: number,
     ): Promise<{ message: string }> {
-      return this.tempsService.deleteTopping(id);
+      return this.tempsService.deleteTemp(id);
     }
 }

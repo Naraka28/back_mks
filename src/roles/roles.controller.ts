@@ -19,7 +19,7 @@ export class RolesController {
   async getRoles(): Promise<Roles[]> {
     return this.rolesService.findAll();
   }
-  @Post()
+  @Post('create')
   async createRole(@Body() createRoleDto: CreateRolesDto): Promise<Roles> {
     return this.rolesService.createRoles(createRoleDto);
   }
