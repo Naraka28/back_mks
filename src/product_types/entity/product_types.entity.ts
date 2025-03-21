@@ -4,7 +4,7 @@ import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 export class Product_Type {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({unique: true})
   type: string;
   
  
