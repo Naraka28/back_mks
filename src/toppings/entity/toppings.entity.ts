@@ -24,6 +24,8 @@ export class Toppings {
   free_quantity: number;
   @Column()
   price: number;
+  @Column()
+  image: string;
 
   @ManyToMany(() => Products, (product) => product.toppings)
   @JoinTable({ name: 'allowedToppings' }) // Esto crea automáticamente la tabla intermedia `products_flavours`

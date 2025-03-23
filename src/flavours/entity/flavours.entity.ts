@@ -9,6 +9,8 @@ export class Flavours {
   name: string;
   @Column()
   price: number;
+  @Column()
+  image: string;
 
   @ManyToMany(() => Products, (product) => product.flavours)
   @JoinTable({ name: 'allowedFlavours' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
