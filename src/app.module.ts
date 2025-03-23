@@ -26,6 +26,7 @@ import { Tickets } from './tickets/entity/tickets.entity';
 import { Toppings } from './toppings/entity/toppings.entity';
 import { TempsModule } from './temps/temps.module';
 import { Product_TypesModule } from './product_types/product_types.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { Product_TypesModule } from './product_types/product_types.module';
     OrderToppingsModule,
     SizesModule,
     MilksModule,
+    ProductsModule,
     ToppingsModule,
     Product_TypesModule,
     FlavoursModule,

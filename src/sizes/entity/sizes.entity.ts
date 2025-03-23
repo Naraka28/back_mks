@@ -16,6 +16,8 @@ export class Sizes {
   name: string;
   @Column()
   price: number;
+  @Column()
+  image: string;
 
   @ManyToMany(() => Products, (product) => product.sizes)
   @JoinTable({ name: 'allowedSizes' }) // Esto crea automáticamente la tabla intermedia `products_sizes`

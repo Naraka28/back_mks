@@ -1,17 +1,34 @@
-import { IsInt, IsPositive, IsString } from "class-validator";
+import { IsString, IsNumber, IsArray,  IsPositive, isNumber } from 'class-validator';
 
-export class CreateProductsDto {
+export class CreateProductDto {
     @IsString()
     name: string;
-    
-    @IsInt()
+
+    @IsNumber()
     @IsPositive()
     base_price: number;
 
-    @IsString()
-    @IsPositive()
+    @IsNumber()
     type: number;
 
-    
-    
+    @IsString()
+    image: string;
+
+    @IsArray()
+    flavours: number[];
+
+    @IsArray()
+    sizes: number[];
+
+    @IsArray()
+    temp: number[];
+
+    @IsArray()
+    toppings: number[];
+
+    @IsArray()
+    milks: number[];
+
+    @IsNumber()
+    order: number;    
 }
