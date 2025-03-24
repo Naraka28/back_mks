@@ -19,5 +19,5 @@ export class Tickets {
   @ManyToOne(() => User, (user) => user.tickets)
   cashier: User;
   @OneToMany(() => Orders, (order) => order.ticket)
-  order: Orders[];
+  orders: Orders[];
 }
