@@ -62,7 +62,7 @@ export class TicketsService {
     
             // Crear ticket correctamente
             const newTicket = new Tickets();
-            newTicket.ticket_date = ticket_date;
+            newTicket.ticket_date = new Date(); // para que tengan la fecha del momento
             newTicket.total = total;
             newTicket.cashier = cashierCreate;
             newTicket.orders = ordersCreate;
