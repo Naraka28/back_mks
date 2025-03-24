@@ -28,7 +28,7 @@ export class Orders {
   @ManyToOne(() => Tickets, (ticket) => ticket.order)
   ticket: Tickets;
   @ManyToOne(() => Flavours)
-  flavor: Flavours;
+  flavour: Flavours;
 
   @ManyToOne(() => Sizes)
   size: Sizes;
