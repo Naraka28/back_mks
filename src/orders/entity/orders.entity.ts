@@ -22,7 +22,7 @@ export class Orders {
   product: Products;
   @Column()
   price: number;
-  @ManyToMany(() => Toppings)
+  @ManyToMany(() => Toppings, { onDelete: 'CASCADE' })
   @JoinTable({ name: 'order_toppings' })
   toppings: Toppings[];
   @ManyToOne(() => Tickets, (ticket) => ticket.order)
