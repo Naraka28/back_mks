@@ -65,7 +65,6 @@ import { ProductsModule } from './products/products.module';
     ToppingsModule,
     Product_TypesModule,
     FlavoursModule,
-    
   ],
   controllers: [AppController],
   providers: [AppService],
