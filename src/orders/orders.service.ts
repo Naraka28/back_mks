@@ -163,7 +163,7 @@ export class OrdersService {
         ticket.ticket_date = new Date();
         ticket.cashier = cashier;
         ticket.total = 0;
-        ticket.order = [];
+        ticket.orders = [];
 
         const savedTicket = await transactionalEntityManager.save(
           Tickets,
@@ -175,7 +175,7 @@ export class OrdersService {
             savedTicket,
             transactionalEntityManager,
           );
-          ticket.order.push(order);
+          ticket.orders.push(order);
           ticket.total += order.price;
         }
 
