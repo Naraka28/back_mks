@@ -35,7 +35,7 @@ export class OrdersService {
           'flavour',
           'size',
           'milk',
-          'temperature',
+          'temp',
         ],
       });
       if (result.length === 0) {
@@ -171,6 +171,7 @@ export class OrdersService {
           Tickets,
           ticket,
         );
+
         for (const orderDto of orders) {
           let order = await this.createOrder(
             orderDto,
@@ -178,6 +179,7 @@ export class OrdersService {
             transactionalEntityManager,
           );
           savedTicket.total += order.price;
+          savedTicket.order.push(order);
         }
         const newTicket = await transactionalEntityManager.save(
           Tickets,

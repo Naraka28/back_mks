@@ -9,6 +9,7 @@ import { Toppings } from 'src/toppings/entity/toppings.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -20,6 +21,7 @@ export class Orders {
   @PrimaryGeneratedColumn()
   id: number;
   @ManyToOne(() => Products, (product) => product.order)
+  @JoinColumn()
   product: Products;
   @Column()
   price: number;
@@ -27,16 +29,21 @@ export class Orders {
   @JoinTable({ name: 'order_toppings' })
   toppings: Toppings[];
   @ManyToOne(() => Tickets)
+  @JoinColumn({ name: 'ticketId' })
   ticket: Tickets;
   @ManyToOne(() => Flavours)
+  @JoinColumn()
   flavour: Flavours;
 
   @ManyToOne(() => Sizes)
+  @JoinColumn()
   size: Sizes;
 
   @ManyToOne(() => Milks)
+  @JoinColumn()
   milk: Milks;
 
   @ManyToOne(() => Temps)
-  temperature: Temps;
+  @JoinColumn()
+  temp: Temps;
 }
