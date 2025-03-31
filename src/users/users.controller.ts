@@ -18,8 +18,7 @@ export class UsersController {
   constructor(private usersServices: UsersService) {}
   @Get()
   async findAllUsers() {
-    const users = await this.usersServices.findAll();
-    return { data: users, message: 'All good' };
+    return this.usersServices.findAll();
   }
   @Post('create')
   createUser(@Body() newUser: CreateUserDto): Promise<User> {

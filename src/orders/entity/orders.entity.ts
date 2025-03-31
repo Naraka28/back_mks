@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Flavours } from 'src/flavours/entity/flavours.entity';
 import { Milks } from 'src/milks/entity/milks.entity';
 import { Products } from 'src/products/entity/products.entity';
@@ -25,7 +26,7 @@ export class Orders {
   @ManyToMany(() => Toppings, { onDelete: 'CASCADE' })
   @JoinTable({ name: 'order_toppings' })
   toppings: Toppings[];
-  @ManyToOne(() => Tickets, (ticket) => ticket.order)
+  @ManyToOne(() => Tickets)
   ticket: Tickets;
   @ManyToOne(() => Flavours)
   flavour: Flavours;
