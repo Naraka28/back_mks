@@ -179,7 +179,7 @@ export class OrdersService {
             transactionalEntityManager,
           );
           savedTicket.total += order.price;
-          savedTicket.order.push(order);
+          savedTicket.orders.push(order);
         }
         const newTicket = await transactionalEntityManager.save(
           Tickets,
