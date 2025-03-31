@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -9,6 +10,7 @@ import {
 import { OrdersService } from './orders.service';
 import { Orders } from './entity/orders.entity';
 import { CreateOrderDto } from './dto/create-orders.dto';
+import { instanceToPlain } from 'class-transformer';
 
 @Controller('orders')
 export class OrdersController {
@@ -18,7 +20,7 @@ export class OrdersController {
     return this.ordersServive.findAll();
   }
   @Post('create')
-  async createOrder(orders: CreateOrderDto[]) {
+  async createOrder(@Body() orders: CreateOrderDto[]) {
     return this.ordersServive.createOrderWithTicket(orders);
   }
   @Delete('delete/:id')

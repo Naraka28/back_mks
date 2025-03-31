@@ -35,7 +35,7 @@ export class OrdersService {
           'flavour',
           'size',
           'milk',
-          'temperature',
+          'temp',
         ],
       });
       if (result.length === 0) {
@@ -45,7 +45,7 @@ export class OrdersService {
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(
-        'Unexpected error fetching Products',
+        'Unexpected error fetching Orders',
       );
     }
   }
@@ -148,7 +148,9 @@ export class OrdersService {
       throw new InternalServerErrorException(`Unexpected error creating Order`);
     }
   }
-  async createOrderWithTicket(orders: CreateOrderDto[]) {
+  async createOrderWithTicket(
+    orders: CreateOrderDto[],
+  ): Promise<Tickets | null> {
     try {
       return this.dataSource.transaction(async (transactionalEntityManager) => {
         const cashier = await this.usersRepository.findOne({
@@ -169,17 +171,25 @@ export class OrdersService {
           Tickets,
           ticket,
         );
+
         for (const orderDto of orders) {
           let order = await this.createOrder(
             orderDto,
             savedTicket,
             transactionalEntityManager,
           );
-          ticket.orders.push(order);
-          ticket.total += order.price;
+          savedTicket.total += order.price;
+          savedTicket.order.push(order);
         }
+        const newTicket = await transactionalEntityManager.save(
+          Tickets,
+          savedTicket,
+        );
 
-        transactionalEntityManager.save(Tickets, ticket);
+        return transactionalEntityManager.findOne(Tickets, {
+          where: { id: newTicket.id },
+          relations: ['order'],
+        });
       });
     } catch (error) {
       console.error(error);
