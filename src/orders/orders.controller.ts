@@ -21,7 +21,7 @@ export class OrdersController {
   }
   @Post('create')
   async createOrder(@Body() orders: CreateOrderDto[]) {
-    return instanceToPlain(this.ordersServive.createOrderWithTicket(orders));
+    return this.ordersServive.createOrderWithTicket(orders);
   }
   @Delete('delete/:id')
   async deleteOrder(

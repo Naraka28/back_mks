@@ -148,7 +148,9 @@ export class OrdersService {
       throw new InternalServerErrorException(`Unexpected error creating Order`);
     }
   }
-  async createOrderWithTicket(orders: CreateOrderDto[]): Promise<Tickets> {
+  async createOrderWithTicket(
+    orders: CreateOrderDto[],
+  ): Promise<Tickets | null> {
     try {
       return this.dataSource.transaction(async (transactionalEntityManager) => {
         const cashier = await this.usersRepository.findOne({
@@ -175,11 +177,17 @@ export class OrdersService {
             savedTicket,
             transactionalEntityManager,
           );
-          ticket.order.push(order);
-          ticket.total += order.price;
+          savedTicket.total += order.price;
         }
+        const newTicket = await transactionalEntityManager.save(
+          Tickets,
+          savedTicket,
+        );
 
-        return await transactionalEntityManager.save(Tickets, ticket);
+        return transactionalEntityManager.findOne(Tickets, {
+          where: { id: newTicket.id },
+          relations: ['order'],
+        });
       });
     } catch (error) {
       console.error(error);
