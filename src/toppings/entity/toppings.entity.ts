@@ -16,8 +16,14 @@ export class Toppings {
   @Column({ unique: true })
   name: string;
 
+
+  //////////
   @Column()
-  base_price: number;
+  base_price: number; // BORRAR DESPUES DE CAMBIAR LOS REGISTROS EN LA BASE DE DATOS
+
+  ///////
+
+
   @Column()
   max_quantity: number;
   @Column()

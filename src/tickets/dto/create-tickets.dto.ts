@@ -9,8 +9,12 @@ export class CreateTicketDto {
     @IsPositive()
     total: number;
     @IsNumber()
+    @IsPositive()
+    @IsInt()
     cashier: number;
     @IsArray()
+    @IsNumber({}, { each: true })
+    @IsPositive({ each: true })
     orders: number[];
 
     // @IsArray()

@@ -8,7 +8,6 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Milks } from './entity/milks.entity';
 import { MilksService } from './milks.service';
 import { CreateMilkDto } from './dto/create-milks.dto';
