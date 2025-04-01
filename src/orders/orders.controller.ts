@@ -15,20 +15,27 @@ import { instanceToPlain } from 'class-transformer';
 @Controller('orders')
 export class OrdersController {
   constructor(private ordersServive: OrdersService) {}
+
   @Get()
   async findAll(): Promise<Orders[]> {
     return this.ordersServive.findAll();
   }
+
+
   @Post('create')
   async createOrder(@Body() orders: CreateOrderDto[]) {
     return this.ordersServive.createOrderWithTicket(orders);
   }
+
+
   @Delete('delete/:id')
   async deleteOrder(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ message: string }> {
     return this.ordersServive.deleteOrder(id);
   }
+
+  
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Orders | null> {
     return this.ordersServive.findOne(id);

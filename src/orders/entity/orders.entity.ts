@@ -26,7 +26,7 @@ export class Orders {
   @Column()
   price: number;
   @ManyToMany(() => Toppings, { onDelete: 'CASCADE' })
-  @JoinTable({ name: 'order_toppings' })
+  @JoinTable({ name: 'order_toppings' } )
   toppings: Toppings[];
   @ManyToOne(() => Tickets)
   @JoinColumn({ name: 'ticketId' })

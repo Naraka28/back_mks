@@ -60,7 +60,7 @@ export class OrdersService {
           'flavour',
           'size',
           'milk',
-          'temperature',
+          'temp',
         ],
       });
       if (!result) {
@@ -211,14 +211,30 @@ export class OrdersService {
 
       const chargeableQuantity = dtoTopping.quantity - dbTopping.free_quantity;
       if (chargeableQuantity > 0) {
-        total += chargeableQuantity * dbTopping.base_price;
+        total += chargeableQuantity * dbTopping.price;
       }
     }
 
     return total;
   }
 
-  async updateOrder() {}
+  async getOrderByTicketId(id:number){
+    try {
+      const result = await this.ordersRepository.find({
+        where: { ticket: { id } },
+        relations: ['product', 'toppings', 'ticket', 'flavour', 'size', 'milk', 'temp'],
+      });
+      if (result.length === 0) {
+        throw new NotFoundException(`Orders not found for ticket ID: ${id}`);
+      }
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException(
+        `Unexpected error fetching orders for ticket ID: ${id}`,
+      );
+    }
+  }
 
   async deleteOrder(id: number): Promise<{ message: string }> {
     try {
