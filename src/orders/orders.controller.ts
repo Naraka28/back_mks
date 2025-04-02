@@ -40,4 +40,11 @@ export class OrdersController {
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Orders | null> {
     return this.ordersServive.findOne(id);
   }
+
+  @Get('ticket/:id')
+  async findByTicketId(@Param('id', ParseIntPipe) id: number): Promise<Orders[]> {
+    return this.ordersServive.getOrderByTicketId(id);
+  }
+
+
 }

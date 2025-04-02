@@ -38,11 +38,45 @@ export class TicketsController {
         return this.ticketsService.getTodayTickets();
     }
 
+    @Get('last_month/')
+    async getLastMonthTickets() {
+        return this.ticketsService.getLastMonthTickets();
+    }	
 
-    // @Get('total/:total')
-    // async getTicketsByTotal(total:number) {
-    //     return this.ticketsService.getTicketsByTotalRange(total);
-    // }
+    @Get('last_week/')
+    async getLastWeekTickets() {
+        return this.ticketsService.getLastWeekTickets();
+    }
+
+    @Get('date_range/:from/:to')
+    async getTicketsByDateRange(@Param('from') from: Date, @Param('to') to: Date) {
+        return this.ticketsService.getTicketsByDateRange(from, to);
+    }
+
+    @Get('total/:min/:max')
+    async getTicketsByTotalRange(@Param('min') min: number, @Param('max') max: number) {
+        return this.ticketsService.getTicketsByTotalRange(min, max);
+    }
+
+    @Get('payment_method/:paymentMethod')
+    async getTicketsByPaymentMethod(@Param('paymentMethod') paymentMethod: string) {
+        return this.ticketsService.getTicketsByPaymentMethod(paymentMethod);
+    }
+
+    @Get('cashier/:cashierId/date/:ticketDate')
+    async getTicketsByCashierAndDate(@Param('cashierId') cashierId: number, @Param('ticketDate') ticketDate: Date) {
+        return this.ticketsService.getTicketsByCashierAndDate(cashierId, ticketDate);
+    }
+    @Get('cashier/:cashierId/date_range/:from/:to')
+    async getTicketsByCashierAndDateRange(@Param('cashierId') cashierId: number, @Param('from') from: Date, @Param('to') to: Date) {
+        return this.ticketsService.getTicketsByCashierAndDateRange(cashierId, from, to);
+    }
+
+    @Get('total/:min/:max/date_range/:from/:to')
+    async getTicketsByTotalAndDateRange(@Param('min') min: number, @Param('max') max: number, @Param('from') from: Date, @Param('to') to: Date) {
+        return this.ticketsService.getTicketsByTotalRangeAndDate(min, max, from,to);
+    }
+
 
     @Post('create')
         async createTicket(@Body() createTicketDto: CreateTicketDto): Promise<Tickets> {
@@ -60,6 +94,7 @@ export class TicketsController {
           @Param('id', ParseIntPipe) id: number,): Promise<{ message: string }> {
           return this.ticketsService.deleteTicket(id);
       }
-    
+
+     
 
 }
