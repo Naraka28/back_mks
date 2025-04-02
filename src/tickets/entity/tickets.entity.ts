@@ -8,16 +8,25 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+
+
+
+
 @Entity()
 export class Tickets {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({type: 'date', default: () => "CURRENT_DATE"})
   ticket_date: Date;
+  @Column({type: 'time', default: () => "CURRENT_TIME"})
+  ticket_time: string;
   @Column()
   total: number;
   @ManyToOne(() => User, (user) => user.tickets)
   cashier: User;
   @OneToMany(() => Orders, (order) => order.ticket)
   orders: Orders[];
+  @Column()
+  payment_method: string;
+
 }

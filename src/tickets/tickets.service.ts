@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Tickets } from './entity/tickets.entity';
+import { Between, In, Repository } from 'typeorm';
+import {  Tickets } from './entity/tickets.entity';
 import { CreateTicketDto } from './dto/create-tickets.dto';
 import { Orders } from 'src/orders/entity/orders.entity';
 import { User } from 'src/users/entity/user.entity';
@@ -46,7 +46,7 @@ export class TicketsService {
 
     async createTicket(createTicket: CreateTicketDto): Promise<Tickets> {
         try {
-            const { ticket_date, total, cashier, orders } = createTicket;
+            const {   payment_method,total, cashier, orders } = createTicket;
     
             // Buscar cajero
             const cashierCreate = await this.userRepository.findOne({ where: { id: cashier } });
@@ -62,10 +62,11 @@ export class TicketsService {
     
             // Crear ticket correctamente
             const newTicket = new Tickets();
-            newTicket.ticket_date = new Date(); // para que tengan la fecha del momento
             newTicket.total = total;
             newTicket.cashier = cashierCreate;
             newTicket.orders = ordersCreate;
+            newTicket.payment_method = payment_method;
+
     
             
             return await this.ticketsRepository.save(newTicket);
@@ -79,7 +80,7 @@ export class TicketsService {
 
     async updateTicket(id: number, updateTicket: CreateTicketDto): Promise<Tickets | null> {
         try {
-            const { ticket_date, total, cashier, orders } = updateTicket;
+            const { payment_method, ticket_time,ticket_date, total, cashier, orders } = updateTicket;
     
             // Buscar cajero
             const cashierUpdate = await this.userRepository.findOne({ where: { id: cashier } });
@@ -100,9 +101,12 @@ export class TicketsService {
             }
     
             ticket.ticket_date = ticket_date;
+            ticket.ticket_time = ticket_time;
             ticket.total = total;
             ticket.cashier = cashierUpdate;
             ticket.orders = ordersUpdate;
+            ticket.payment_method = payment_method;
+
     
             return await this.ticketsRepository.save(ticket);
         } catch (error) {
@@ -215,28 +219,182 @@ export class TicketsService {
         }
     }
 
+    async getLastMonthTickets(): Promise<Tickets[]> {
+        try {
+            const today = new Date();
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+    
+            const tickets = await this.ticketsRepository.find({
+                where: { ticket_date: Between(today,lastMonth) },
+                relations: ['orders', 'cashier'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException('No tickets found for last month');
+            }
+    
+            return tickets;
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
+
+        
+    }
+
+    async getLastWeekTickets(): Promise<Tickets[]> {
+        try {
+            const today = new Date();
+            const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    
+            const tickets = await this.ticketsRepository.find({
+                where: { ticket_date: Between(today,lastWeek) },
+                relations: ['orders', 'cashier'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException('No tickets found for last week');
+            }
+    
+            return tickets;
+        }
+        catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
+    }
+
+
+
     async getTicketsByDateRange(from: Date, to: Date): Promise<Tickets[]> {
-        throw new Error('Method not implemented.');
+        try {
+            const tickets = await this.ticketsRepository.find({
+                where: { ticket_date: Between(from, to) },
+                relations: ['orders', 'cashier'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException(`No tickets found between ${from} and ${to}`);
+            }
+    
+            return tickets;
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
     }
 
     async getTicketsByCashierAndDate(cashierId: number, ticketDate: Date): Promise<Tickets[]> {
-        throw new Error('Method not implemented.');
-    }
+        try {
+            const cashier = await this.userRepository.findOne({ where: { id: cashierId } });
+            if (!cashier) {
+                throw new NotFoundException(`Cashier with ID ${cashierId} not found`);
+            }
+    
+            const tickets = await this.ticketsRepository.find({
+                where: { cashier, ticket_date: ticketDate },
+                relations: ['orders'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException(`No tickets found for cashier ID ${cashierId} on date ${ticketDate}`);
+            }
+    
+            return tickets;
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
+       }
 
     async getTicketsByCashierAndDateRange(cashierId: number, from: Date, to: Date): Promise<Tickets[]> {
-
-        throw new Error('Method not implemented.');
+        try{
+            const cashier = await this.userRepository.findOne({ where: { id: cashierId } });
+            if (!cashier) {
+                throw new NotFoundException(`Cashier with ID ${cashierId} not found`);
+            }
+    
+            const tickets = await this.ticketsRepository.find({
+                where: { cashier, ticket_date: Between(from, to) },
+                relations: ['orders'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException(`No tickets found for cashier ID ${cashierId} between ${from} and ${to}`);
+            }
+    
+            return tickets;
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
+       
     }
 
-    async getTicketsByTotalRange(total: number): Promise<Tickets[]> {
-        throw new Error('Method not implemented.');
+    async getTicketsByTotalRange(totalMin: number, totalMax:number): Promise<Tickets[]> {
+        try {
+            const tickets = await this.ticketsRepository.find({
+                where: { total: Between(totalMin, totalMax) },
+                relations: ['orders', 'cashier'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException(`No tickets found with total between ${totalMin} and ${totalMax}`);
+            }
+    
+            return tickets;
+        }catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
     }
 
-    async getTicketsByTotalRangeAndDate(total: number, ticketDate: Date): Promise<Tickets[]> {
-        throw new Error('Method not implemented.');
+    async getTicketsByTotalRangeAndDate(totalMin: number, totalMax:number, from: Date, to: Date): Promise<Tickets[]> {
+        try{
+            const tickets = await this.ticketsRepository.find({
+                where: { total: Between(totalMin, totalMax), ticket_date: Between(from, to) },
+                relations: ['orders', 'cashier'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException(`No tickets found with total between ${totalMin} and ${totalMax} and date between ${from} and ${to}`);
+            }
+    
+            return tickets;
+        }catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
     }
 
+    async getTicketsByPaymentMethod(paymentMethod: string): Promise<Tickets[]> {
 
+        try {
+          
+            const tickets = await this.ticketsRepository.find({
+                where: { payment_method: paymentMethod},
+                relations: ['orders', 'cashier'],
+                
+            });
+    
+            if (tickets.length === 0) {
+                throw new NotFoundException(`No tickets found with payment method ${paymentMethod}`);
+            }
+    
+            return tickets;
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+            throw new InternalServerErrorException(`Unexpected error fetching tickets: ${error.message}`);
+        }
+
+    }
 
 
 
