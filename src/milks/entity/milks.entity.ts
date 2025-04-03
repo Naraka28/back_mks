@@ -13,7 +13,6 @@ export class Milks {
   image: string;
   
   @ManyToMany(() => Products, (product) => product.milks)
-  @JoinTable({ name: 'allowedMilks' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   products: Products[];
  
 }
