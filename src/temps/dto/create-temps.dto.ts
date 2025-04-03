@@ -1,9 +1,13 @@
-import { IsInt, IsPositive, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsPositive, IsString } from 'class-validator';
 
 export class CreateTempsDto {
-    @IsString()
-    name: string;
-    @IsInt()
-    @IsPositive()
-    price: number;
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsInt()
+  @IsPositive()
+  price: number;
 }

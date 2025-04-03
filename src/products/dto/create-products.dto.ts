@@ -1,34 +1,51 @@
-import { IsString, IsNumber, IsArray,  IsPositive, isNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsString,
+  IsNumber,
+  IsArray,
+  IsPositive,
+  isNumber,
+} from 'class-validator';
 
 export class CreateProductDto {
-    @IsString()
-    name: string;
+  @ApiProperty()
+  @IsString()
+  name: string;
 
-    @IsNumber()
-    @IsPositive()
-    base_price: number;
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  base_price: number;
 
-    @IsNumber()
-    type: number;
+  @ApiProperty()
+  @IsNumber()
+  type: number;
 
-    @IsString()
-    image: string;
+  @ApiProperty()
+  @IsString()
+  image: string;
 
-    @IsArray()
-    flavours: number[];
+  @ApiProperty()
+  @IsArray()
+  flavours: number[];
 
-    @IsArray()
-    sizes: number[];
+  @ApiProperty()
+  @IsArray()
+  sizes: number[];
 
-    @IsArray()
-    temp: number[];
+  @ApiProperty()
+  @IsArray()
+  temp: number[];
 
-    @IsArray()
-    toppings: number[];
+  @ApiProperty()
+  @IsArray()
+  toppings: number[];
 
-    @IsArray()
-    milks: number[];
+  @ApiProperty()
+  @IsArray()
+  milks: number[];
 
-    @IsNumber()
-    order: number;    
+  @ApiProperty()
+  @IsNumber()
+  order: number;
 }
