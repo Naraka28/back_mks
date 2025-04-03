@@ -9,6 +9,10 @@ import {   Body,
 import { Products } from './entity/products.entity';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-products.dto';
+import { Flavours } from 'src/flavours/entity/flavours.entity';
+import { Milks } from 'src/milks/entity/milks.entity';
+import { Sizes } from 'src/sizes/entity/sizes.entity';
+import { Temps } from 'src/temps/entity/temps.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -64,5 +68,25 @@ export class ProductsController {
         return this.productsService.getProductsByTemp(tempId);
     }
     
+
+    @Get('allowed_flavours/:productId')
+    async getAllowedFlavours(@Param('productId', ParseIntPipe) productId: number): Promise<Flavours[]> {
+        return this.productsService.getProductAllowedFlavours(productId);
+    }
+
+    @Get('allowed_sizes/:productId')
+    async getAllowedSizes(@Param('productId', ParseIntPipe) productId: number): Promise<Sizes[]> {
+        return this.productsService.getProductAllowedSizes(productId);
+    }
+
+    @Get('allowed_milks/:productId')
+    async getAllowedMilks(@Param('productId', ParseIntPipe) productId: number): Promise<Milks[]> {
+        return this.productsService.getProductAllowedMilks(productId);
+    }
+
+    @Get('allowed_te,[s/:productId')
+    async getAllowedTemps(@Param('productId', ParseIntPipe) productId: number): Promise<Temps[]> {
+        return this.productsService.getProductAllowedTemps(productId);
+    }
 
 }
