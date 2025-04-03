@@ -33,18 +33,23 @@ export class Products {
   image: string;
 
   @ManyToMany(() => Flavours)
+  @JoinTable({ name: 'allowedFlavours' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   flavours: Flavours[];
 
   @ManyToMany(() => Sizes)
+  @JoinTable({ name: 'allowedSizes' }) // Esto crea automáticamente la tabla intermedia `products_sizes`
   sizes: Sizes[];
 
   @ManyToMany(() => Temps)
+  @JoinTable({ name: 'allowedTemps' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   temp: Temps[];
 
   @ManyToMany(() => Toppings)
+  @JoinTable({ name: 'allowedToppings' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   toppings: Toppings[];
 
   @ManyToMany(() => Milks)
+  @JoinTable({ name: 'allowedMilks' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   milks: Milks[];
 
   @OneToMany(() => Orders, (order) => order.product)

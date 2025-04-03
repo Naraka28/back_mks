@@ -285,8 +285,10 @@ export class ProductsService {
             throw new InternalServerErrorException('Unexpected error fetching product temps');
         }
     }
+
     
     
+
       
 }
 

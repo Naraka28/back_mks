@@ -25,7 +25,6 @@ export class Toppings {
   image: string;
 
   @ManyToMany(() => Products, (product) => product.toppings)
-  @JoinTable({ name: 'allowedToppings' }) // Esto crea automáticamente la tabla intermedia `products_flavours`
   products: Products[];
 
   @ManyToMany(() => Orders)
