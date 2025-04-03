@@ -84,7 +84,7 @@ export class ProductsController {
         return this.productsService.getProductAllowedMilks(productId);
     }
 
-    @Get('allowed_te,[s/:productId')
+    @Get('allowed_temps/:productId')
     async getAllowedTemps(@Param('productId', ParseIntPipe) productId: number): Promise<Temps[]> {
         return this.productsService.getProductAllowedTemps(productId);
     }
