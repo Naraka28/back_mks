@@ -215,6 +215,79 @@ export class ProductsService {
         }
     }
 
+    async getProductAllowedToppings(productId: number): Promise<Toppings[]> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { id: productId },
+                relations: ['toppings'],
+            });
+            if (!product) {
+                throw new NotFoundException(`Product with ID ${productId} not found`);
+            }
+            return product.toppings;
+        } catch (error) {
+            throw new InternalServerErrorException('Unexpected error fetching product toppings');
+        }
+    }
+    async getProductAllowedMilks(productId: number): Promise<Milks[]> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { id: productId },
+                relations: ['milks'],
+            });
+            if (!product) {
+                throw new NotFoundException(`Product with ID ${productId} not found`);
+            }
+            return product.milks;
+        } catch (error) {
+            throw new InternalServerErrorException('Unexpected error fetching product milks');
+        }
+    }
+    async getProductAllowedSizes(productId: number): Promise<Sizes[]> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { id: productId },
+                relations: ['sizes'],
+            });
+            if (!product) {
+                throw new NotFoundException(`Product with ID ${productId} not found`);
+            }
+            return product.sizes;
+        } catch (error) {
+            throw new InternalServerErrorException('Unexpected error fetching product sizes');
+        }
+    }
+    async getProductAllowedFlavours(productId: number): Promise<Flavours[]> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { id: productId },
+                relations: ['flavours'],
+            });
+            if (!product) {
+                throw new NotFoundException(`Product with ID ${productId} not found`);
+            }
+            return product.flavours;
+        } catch (error) {
+            throw new InternalServerErrorException('Unexpected error fetching product flavours');
+        }
+    }
+    async getProductAllowedTemps(productId: number): Promise<Temps[]> {
+        try {
+            const product = await this.productsRepository.findOne({
+                where: { id: productId },
+                relations: ['temp'],
+            });
+            if (!product) {
+                throw new NotFoundException(`Product with ID ${productId} not found`);
+            }
+            return product.temp;
+        } catch (error) {
+            throw new InternalServerErrorException('Unexpected error fetching product temps');
+        }
+    }
+    
     
       
 }
+
+
