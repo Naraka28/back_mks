@@ -17,11 +17,10 @@ export class MilksService {
   ) {}
   async findAll(): Promise<Milks[]> {
     try {
-      const result = await this.milksRepository.find({
-        relations: { products: true },
-      });
+      const result = await this.milksRepository.find(
+       );
       if (result.length === 0) {
-        throw new NotFoundException('Milks not founded');
+        throw new NotFoundException('Milks not found');
       }
       return result;
     } catch (error) {
@@ -33,7 +32,6 @@ export class MilksService {
     try {
       return await this.milksRepository.findOne({
         where: { id },
-        relations: { products: true },
       });
     } catch (error) {
       console.error(error);
@@ -70,7 +68,6 @@ export class MilksService {
       }
       return this.milksRepository.findOne({
         where: { id },
-        relations: { products: true },
       });
     } catch (error) {
       console.error(error);

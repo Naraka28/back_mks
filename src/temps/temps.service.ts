@@ -26,7 +26,6 @@ export class TempsService {
         try {
             return await this.TempsRepository.findOne({
                 where: { id },
-                relations: { products: true },
             });
         } catch (error) {
             console.error(error);
@@ -68,7 +67,6 @@ export class TempsService {
           }
           return this.TempsRepository.findOne({
             where: { id },
-            relations: { products: true },
           });
         } catch (error) {
           console.error(error);

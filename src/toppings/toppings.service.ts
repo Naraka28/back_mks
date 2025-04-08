@@ -25,7 +25,6 @@ export class ToppingsService {
         try {
             return await this.toppingsRepository.findOne({
                 where: { id },
-                relations: { products: true },
             });
         } catch (error) {
             console.error(error);
@@ -66,7 +65,6 @@ export class ToppingsService {
           }
           return this.toppingsRepository.findOne({
             where: { id },
-            relations: { products: true },
           });
         } catch (error) {
           console.error(error);

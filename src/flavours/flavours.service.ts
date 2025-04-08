@@ -59,7 +59,7 @@ export class FlavoursService {
     try {
       return await this.FlavoursRepository.findOne({
         where: { id },
-        relations: { products: true },
+       
       });
     } catch (error) {
       console.error(error);

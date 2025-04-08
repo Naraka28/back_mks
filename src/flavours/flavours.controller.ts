@@ -7,8 +7,8 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { FlavoursService } from './flavours.service';
 import { CreateFlavourDto } from './dto/create-flavour.dto';
@@ -24,7 +24,7 @@ export class FlavoursController {
       if (!flavours || flavours.length === 0) {
         throw new HttpException('No flavours found', HttpStatus.NOT_FOUND);
       }
-      return { data: flavours };
+      return  flavours;
     } catch (error) {
       console.error('Error fetching Flavours', error);
       if (error instanceof HttpException) {
@@ -44,7 +44,7 @@ export class FlavoursController {
       if (!flavour) {
         throw new HttpException('Flavour not found', HttpStatus.NOT_FOUND);
       }
-      return { data: flavour };
+      return { flavour };
     } catch (error) {
       console.error('Error fetching flavour by ID:', error);
       if (error instanceof HttpException) {
@@ -72,7 +72,7 @@ export class FlavoursController {
       );
     }
   }
-  @Patch('update/:id')
+  @Put('update/:id')
   async updateFlavour(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateFlavourDto: CreateFlavourDto, // Cambié a UpdateFlavourDto
@@ -88,7 +88,7 @@ export class FlavoursController {
           HttpStatus.NOT_FOUND,
         );
       }
-      return { data: updatedFlavour };
+      return  updatedFlavour ;
     } catch (error) {
       console.error('Error updating flavour:', error);
       if (error instanceof HttpException) {
