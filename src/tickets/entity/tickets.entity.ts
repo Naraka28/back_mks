@@ -8,17 +8,19 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-
-
-
+export enum TicketStatus {
+  PENDIENTE = 'PENDIENTE',
+  COMPLETADO = 'COMPLETADO',
+  CANCELADO = 'CANCELADO',
+}
 
 @Entity()
 export class Tickets {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({type: 'date', default: () => "CURRENT_DATE"})
+  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   ticket_date: Date;
-  @Column({type: 'time', default: () => "CURRENT_TIME"})
+  @Column({ type: 'time', default: () => 'CURRENT_TIME' })
   ticket_time: string;
   @Column()
   total: number;
@@ -28,5 +30,6 @@ export class Tickets {
   orders: Orders[];
   @Column()
   payment_method: string;
-
+  @Column({ type: 'enum', enum: TicketStatus, default: TicketStatus.PENDIENTE })
+  status: TicketStatus;
 }
