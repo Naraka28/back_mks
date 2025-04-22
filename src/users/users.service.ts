@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { RoleList, Roles } from 'src/roles/entity/roles.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -106,6 +106,22 @@ export class UsersService {
       console.error(error);
       throw new InternalServerErrorException(
         `Unexpected error deleting user with ID: ${id}`,
+      );
+    }
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException(`Email for not found`);
+      }
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Unexpected error at finding email',
       );
     }
   }

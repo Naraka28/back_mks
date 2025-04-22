@@ -27,6 +27,7 @@ import { Toppings } from './toppings/entity/toppings.entity';
 import { TempsModule } from './temps/temps.module';
 import { Product_TypesModule } from './product_types/product_types.module';
 import { ProductsModule } from './products/products.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { ProductsModule } from './products/products.module';
     ToppingsModule,
     Product_TypesModule,
     FlavoursModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
