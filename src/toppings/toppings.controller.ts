@@ -1,7 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ToppingsService } from './toppings.service';
 import { Toppings } from './entity/toppings.entity';
 import { CreateToppingsDto } from './dto/create-toppings.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
+
 
 @Controller('toppings')
 export class ToppingsController {
@@ -12,9 +16,24 @@ export class ToppingsController {
     }
   
     @Post('create')
-    async createTopping(@Body() createToppingDto: CreateToppingsDto): Promise<Toppings> {
-      return this.toppingsService.createTopping(createToppingDto);
-    }
+    @UseInterceptors(
+      FileInterceptor('image', {
+        storage: diskStorage({
+          destination: './uploads', // carpeta donde se guarda
+          filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = extname(file.originalname);
+            cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+          },
+        }),
+      }),
+    )
+    async createTopping(
+      @UploadedFile() image: Express.Multer.File,
+      @Body() createToppingDto: Toppings): Promise<Toppings> {
+        const imageUrl = `/uploads/toppings/${image.filename}`;
+        return { ...createToppingDto, image: imageUrl };
+      }
     
     @Get(':id')
     async getTopping(@Param('id', ParseIntPipe) id: number): Promise<Toppings | null> {
