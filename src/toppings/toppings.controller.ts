@@ -38,7 +38,7 @@ export class ToppingsController {
     async createTopping(
       @UploadedFile() image: Express.Multer.File,
       @Body() toppingNew: Toppings): Promise<Toppings> {
-        const imageUrl = `https://backmks-production.up.railway.app/mks/uploads/toppings/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
+        const imageUrl = `https://backmks-production.up.railway.app/uploads/toppings/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
         // const imageUrl = `/uploads/toppings/${image.filename}`;
         const ToppingNewData= {...toppingNew, image: imageUrl };
         //console.log('ToppingNewData:',ToppingNewData);
@@ -66,8 +66,13 @@ export class ToppingsController {
         destination: './uploads/toppings',
         filename: (req, file, cb) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+            const ext = extname(file.originalname);
+            const name = file.originalname.split('.').slice(0, -1).join('.'); // nombre sin extension
+            // console.log('original',file.originalname);
+            // console.log('ext',ext);
+            // console.log('suffix',uniqueSuffix);
+            // console.log('fieldname',file.fieldname);
+            cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
         },
       }),
   }),
@@ -78,7 +83,7 @@ async updateTopping(
   @UploadedFile() image?: Express.Multer.File,
 ): Promise<Toppings | null> {
   if (image) {
-    const imageUrl = `https://backmks-production.up.railway.app/mks/uploads/toppings/${image.filename}`; 
+    const imageUrl = `https://backmks-production.up.railway.app/uploads/toppings/${image.filename}`; 
     updateToppingDto.image = imageUrl; // Actualiza la URL de la imagen en el DTO
   }
 
