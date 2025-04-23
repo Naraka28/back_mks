@@ -8,19 +8,16 @@ export class CreateToppingsDto {
   name: string;
 
   @ApiProperty()
-  @Type(() => Number)
   @IsInt()
   @IsPositive()
   max_quantity: number;
 
   @ApiProperty()
-  @Type(() => Number)
   @IsInt()
   @IsPositive()
   free_quantity: number;
 
   @ApiProperty()
-  @Type(() => Number)
   @IsInt()
   @IsPositive()
   price: number;
