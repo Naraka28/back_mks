@@ -9,11 +9,6 @@ export class CreateToppingsDto {
   @ApiProperty()
   @IsInt()
   @IsPositive()
-  base_price: number;
-
-  @ApiProperty()
-  @IsInt()
-  @IsPositive()
   max_quantity: number;
 
   @ApiProperty()
@@ -25,4 +20,10 @@ export class CreateToppingsDto {
   @IsInt()
   @IsPositive()
   price: number;
+
+  @ApiProperty()
+  @IsString()
+  image?: string;
+
+
 }
