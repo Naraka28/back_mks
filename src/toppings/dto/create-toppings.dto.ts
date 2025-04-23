@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsPositive, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateToppingsDto {
   @ApiProperty()
@@ -7,23 +8,24 @@ export class CreateToppingsDto {
   name: string;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsInt()
   @IsPositive()
   max_quantity: number;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsInt()
   @IsPositive()
   free_quantity: number;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsInt()
   @IsPositive()
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   image?: string;
-
-
 }
