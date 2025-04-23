@@ -38,7 +38,8 @@ export class ToppingsController {
     async createTopping(
       @UploadedFile() image: Express.Multer.File,
       @Body() toppingNew: Toppings): Promise<Toppings> {
-        const imageUrl = `/uploads/toppings/${image.filename}`;
+        const imageUrl = `https://backmks-production.up.railway.app/mks/uploads/toppings/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
+        // const imageUrl = `/uploads/toppings/${image.filename}`;
         const ToppingNewData= {...toppingNew, image: imageUrl };
         //console.log('ToppingNewData:',ToppingNewData);
         return await this.toppingsService.createTopping(ToppingNewData);
