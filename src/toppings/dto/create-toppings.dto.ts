@@ -21,5 +21,9 @@ export class CreateToppingsDto {
   @IsPositive()
   price: number;
 
+  @ApiProperty()
+  @IsString()
+  image?: string;
+
 
 }

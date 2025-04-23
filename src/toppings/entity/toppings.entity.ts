@@ -15,9 +15,9 @@ export class Toppings {
   id: number;
   @Column({ unique: true })
   name: string;
-  @Column()
+  @Column({default: 5})
   max_quantity: number;
-  @Column()
+  @Column({default: 1})
   free_quantity: number;
   @Column()
   price: number;

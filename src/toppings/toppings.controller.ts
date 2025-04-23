@@ -14,32 +14,46 @@ export class ToppingsController {
     async gettoppings(): Promise<Toppings[]> {
       return this.toppingsService.findAll();
     }
+
+
   
     @Post('create')
     @UseInterceptors(
       FileInterceptor('image', {
         storage: diskStorage({
-          destination: './uploads', // carpeta donde se guarda
+          destination: './uploads/toppings', // carpeta donde se guarda
           filename: (req, file, cb) => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
             const ext = extname(file.originalname);
-            cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+            const name = file.originalname.split('.').slice(0, -1).join('.'); // nombre sin extension
+            // console.log('original',file.originalname);
+            // console.log('ext',ext);
+            // console.log('suffix',uniqueSuffix);
+            // console.log('fieldname',file.fieldname);
+            cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
           },
         }),
       }),
     )
     async createTopping(
       @UploadedFile() image: Express.Multer.File,
-      @Body() createToppingDto: Toppings): Promise<Toppings> {
+      @Body() toppingNew: Toppings): Promise<Toppings> {
         const imageUrl = `/uploads/toppings/${image.filename}`;
-        return { ...createToppingDto, image: imageUrl };
+        const ToppingNewData= {...toppingNew, image: imageUrl };
+        //console.log('ToppingNewData:',ToppingNewData);
+        return await this.toppingsService.createTopping(ToppingNewData);
       }
     
     @Get(':id')
     async getTopping(@Param('id', ParseIntPipe) id: number): Promise<Toppings | null> {
       return this.toppingsService.findOne(id);
     }
-  
+    
+    // @Get('upload/toppings/:filename')
+    // // async getToppingImage(@Param('filename') filename: string): Promise<string> {
+    // //   //return `http://localhost:3000/uploads/toppings/${filename}`;
+    // // }
+
     @Put('update/:id')
     async updateTopping(
       @Param('id', ParseIntPipe) id: number,
