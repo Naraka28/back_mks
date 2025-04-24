@@ -12,7 +12,7 @@ import { Milks } from 'src/milks/entity/milks.entity';
 import { Products } from 'src/products/entity/products.entity';
 import { Sizes } from 'src/sizes/entity/sizes.entity';
 import { Temps } from 'src/temps/entity/temps.entity';
-import { Tickets } from 'src/tickets/entity/tickets.entity';
+import { Tickets, TicketStatus } from 'src/tickets/entity/tickets.entity';
 import { Toppings } from 'src/toppings/entity/toppings.entity';
 import { User } from 'src/users/entity/user.entity';
 import { ToppingOrderDto } from 'src/toppings/dto/create-toppings-orders.dto';
@@ -122,7 +122,10 @@ export class OrdersService {
         );
       }
 
-      let toppingsPrice = this.calculateToppingsPrice(order.toppings, toppings);
+      const toppingsPrice = this.calculateToppingsPrice(
+        order.toppings,
+        toppings,
+      );
 
       const price =
         product.base_price +
@@ -162,10 +165,13 @@ export class OrdersService {
           );
         }
         const ticket = new Tickets();
-        ticket.ticket_date = new Date();
+        const utcDate = new Date().toLocaleDateString('en-CA');
+        ticket.ticket_date = new Date(utcDate);
         ticket.cashier = cashier;
         ticket.total = 0;
         ticket.orders = [];
+        ticket.payment_method = 'Efectivo';
+        ticket.status = TicketStatus.PENDIENTE;
 
         const savedTicket = await transactionalEntityManager.save(
           Tickets,
@@ -173,7 +179,7 @@ export class OrdersService {
         );
 
         for (const orderDto of orders) {
-          let order = await this.createOrder(
+          const order = await this.createOrder(
             orderDto,
             savedTicket,
             transactionalEntityManager,
@@ -185,10 +191,20 @@ export class OrdersService {
           Tickets,
           savedTicket,
         );
+        console.log(newTicket);
 
         return transactionalEntityManager.findOne(Tickets, {
           where: { id: newTicket.id },
-          relations: ['order'],
+          relations: [
+            'cashier',
+            'orders',
+            'orders.product',
+            'orders.flavour',
+            'orders.size',
+            'orders.milk',
+            'orders.toppings',
+            'orders.temp',
+          ],
         });
       });
     } catch (error) {
@@ -218,11 +234,19 @@ export class OrdersService {
     return total;
   }
 
-  async getOrderByTicketId(id:number){
+  async getOrderByTicketId(id: number) {
     try {
       const result = await this.ordersRepository.find({
         where: { ticket: { id } },
-        relations: ['product', 'toppings', 'ticket', 'flavour', 'size', 'milk', 'temp'],
+        relations: [
+          'product',
+          'toppings',
+          'ticket',
+          'flavour',
+          'size',
+          'milk',
+          'temp',
+        ],
       });
       if (result.length === 0) {
         throw new NotFoundException(`Orders not found for ticket ID: ${id}`);

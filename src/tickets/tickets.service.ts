@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, In, MoreThanOrEqual, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { Tickets, TicketStatus } from './entity/tickets.entity';
 import { CreateTicketDto } from './dto/create-tickets.dto';
 import { Orders } from 'src/orders/entity/orders.entity';
@@ -21,9 +21,36 @@ export class TicketsService {
 
   async findAll(): Promise<Tickets[]> {
     try {
-      const result = await this.ticketsRepository.find({
-        relations: ['orders', 'cashier'],
-      });
+      const result = await this.ticketsRepository
+        .createQueryBuilder('ticket')
+        .leftJoin('ticket.orders', 'orders')
+        .leftJoin('ticket.cashier', 'cashier')
+        .leftJoin('orders.product', 'product')
+        .leftJoin('orders.flavour', 'flavour')
+        .leftJoin('orders.size', 'size')
+        .leftJoin('orders.milk', 'milk')
+        .leftJoin('orders.toppings', 'toppings')
+        .leftJoin('orders.temp', 'temp')
+        .select([
+          'ticket',
+          'orders.id',
+          'orders.price',
+          'cashier.id',
+          'cashier.name',
+          'product.id',
+          'product.name',
+          'flavour.id',
+          'flavour.name',
+          'size.id',
+          'size.name',
+          'milk.id',
+          'milk.name',
+          'toppings.id',
+          'toppings.name',
+          'temp.id',
+          'temp.name',
+        ])
+        .getMany();
       if (result.length === 0) {
         throw new NotFoundException('tickets not founded');
       }
@@ -32,9 +59,7 @@ export class TicketsService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        'Unexpected error fetching tickets',
-      );
+      throw error;
     }
   }
 
@@ -53,9 +78,7 @@ export class TicketsService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        `Failed to retrieve ticket with ID ${id}`,
-      );
+      throw error;
     }
   }
 
@@ -92,9 +115,7 @@ export class TicketsService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        `Unexpected error at creating new ticket: ${error.message}`,
-      );
+      throw error;
     }
   }
 
@@ -235,7 +256,9 @@ export class TicketsService {
       });
 
       if (tickets.length === 0) {
-        throw new NotFoundException(`No tickets found for date ${ticketDate}`);
+        throw new NotFoundException(
+          `No tickets found for date ${ticketDate.toString()}`,
+        );
       }
 
       return tickets;
@@ -344,7 +367,7 @@ export class TicketsService {
 
       if (tickets.length === 0) {
         throw new NotFoundException(
-          `No tickets found between ${from} and ${to}`,
+          `No tickets found between ${from.toString()} and ${to.toString()}`,
         );
       }
 
@@ -379,7 +402,7 @@ export class TicketsService {
 
       if (tickets.length === 0) {
         throw new NotFoundException(
-          `No tickets found for cashier ID ${cashierId} on date ${ticketDate}`,
+          `No tickets found for cashier ID ${cashierId} on date ${ticketDate.toString()}`,
         );
       }
 
@@ -415,7 +438,7 @@ export class TicketsService {
 
       if (tickets.length === 0) {
         throw new NotFoundException(
-          `No tickets found for cashier ID ${cashierId} between ${from} and ${to}`,
+          `No tickets found for cashier ID ${cashierId} between ${from.toString()} and ${to.toString()}`,
         );
       }
 
@@ -476,7 +499,7 @@ export class TicketsService {
 
       if (tickets.length === 0) {
         throw new NotFoundException(
-          `No tickets found with total between ${totalMin} and ${totalMax} and date between ${from} and ${to}`,
+          `No tickets found with total between ${totalMin} and ${totalMax} and date between ${from.toString()} and ${to.toString()}`,
         );
       }
 
@@ -519,28 +542,73 @@ export class TicketsService {
 
   async getTodayPendingTickets(): Promise<Tickets[]> {
     try {
+      const utcDate = new Date().toLocaleDateString('en-CA');
       const tickets = await this.ticketsRepository
-        .createQueryBuilder('tickets')
-        .where('tickets.status = :status', { status: TicketStatus.PENDIENTE })
-        .andWhere('tickets.ticket_date >= CURRENT_DATE')
+        .createQueryBuilder('ticket')
+        .leftJoinAndSelect('ticket.cashier', 'cashier')
+        .leftJoinAndSelect('ticket.orders', 'orders')
+        .leftJoinAndSelect('orders.flavour', 'flavour')
+        .leftJoinAndSelect('orders.product', 'product')
+        .leftJoinAndSelect('orders.toppings', 'toppings')
+        .leftJoinAndSelect('orders.temp', 'temps')
+        .leftJoinAndSelect('orders.milk', 'milks')
+        .leftJoinAndSelect('orders.size', 'sizes')
+        .select([
+          'ticket',
+          'cashier.id',
+          'cashier.name',
+          'orders.id',
+          'orders.price',
+          'product.name',
+          'temps.name',
+          'milks.name',
+          'sizes.name',
+          'flavour.name',
+          'toppings.name',
+        ])
+        .where('ticket.status = :status', { status: TicketStatus.PENDIENTE })
+        .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })
         .getMany();
-      if (tickets.length === 0)
-        throw new NotFoundException(`Theres no pending tickets`);
+
+      if (tickets.length === 0) {
+        throw new NotFoundException('No hay tickets pendientes hoy');
+      }
+
       return tickets;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException(
-        `Unexpected error fetching tickets: ${error.message}`,
-      );
+      throw error;
     }
   }
 
   async getTodayCompletedTickets(): Promise<Tickets[]> {
     try {
+      const utcDate = new Date().toLocaleDateString('en-CA');
       const tickets = await this.ticketsRepository
-        .createQueryBuilder('tickets')
-        .where('tickets.status = :status', { status: TicketStatus.COMPLETADO })
-        .andWhere('tickets.ticket_date >= CURRENT_DATE')
+        .createQueryBuilder('ticket')
+        .leftJoinAndSelect('ticket.cashier', 'cashier')
+        .leftJoinAndSelect('ticket.orders', 'orders')
+        .leftJoinAndSelect('orders.flavour', 'flavour')
+        .leftJoinAndSelect('orders.product', 'product')
+        .leftJoinAndSelect('orders.toppings', 'toppings')
+        .leftJoinAndSelect('orders.temp', 'temps')
+        .leftJoinAndSelect('orders.milk', 'milks')
+        .leftJoinAndSelect('orders.size', 'sizes')
+        .select([
+          'ticket',
+          'cashier.id',
+          'cashier.name',
+          'orders.id',
+          'orders.price',
+          'product.name',
+          'temps.name',
+          'milks.name',
+          'sizes.name',
+          'flavour.name',
+          'toppings.name',
+        ])
+        .where('ticket.status = :status', { status: TicketStatus.COMPLETADO })
+        .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })
         .getMany();
 
       if (tickets.length === 0)
@@ -549,9 +617,32 @@ export class TicketsService {
       return tickets;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException(
-        `Unexpected error fetching completed tickets`,
-      );
+      throw error;
     }
+  }
+
+  async payTicket(id: number): Promise<Tickets> {
+    const ticket = await this.ticketsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!ticket) {
+      throw new NotFoundException(`Ticket with ID: $${id} not found`);
+    }
+    ticket.status = TicketStatus.COMPLETADO;
+    return this.ticketsRepository.save(ticket);
+  }
+  async cancelTicket(id: number): Promise<Tickets> {
+    const ticket = await this.ticketsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!ticket) {
+      throw new NotFoundException(`Ticket with ID: $${id} not found`);
+    }
+    ticket.status = TicketStatus.CANCELADO;
+    return this.ticketsRepository.save(ticket);
   }
 }

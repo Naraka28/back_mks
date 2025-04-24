@@ -10,7 +10,6 @@ import {
 import { OrdersService } from './orders.service';
 import { Orders } from './entity/orders.entity';
 import { CreateOrderDto } from './dto/create-orders.dto';
-import { instanceToPlain } from 'class-transformer';
 
 @Controller('orders')
 export class OrdersController {
@@ -21,12 +20,10 @@ export class OrdersController {
     return this.ordersServive.findAll();
   }
 
-
   @Post('create')
   async createOrder(@Body() orders: CreateOrderDto[]) {
     return this.ordersServive.createOrderWithTicket(orders);
   }
-
 
   @Delete('delete/:id')
   async deleteOrder(
@@ -35,16 +32,15 @@ export class OrdersController {
     return this.ordersServive.deleteOrder(id);
   }
 
-  
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Orders | null> {
     return this.ordersServive.findOne(id);
   }
 
   @Get('ticket/:id')
-  async findByTicketId(@Param('id', ParseIntPipe) id: number): Promise<Orders[]> {
+  async findByTicketId(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Orders[]> {
     return this.ordersServive.getOrderByTicketId(id);
   }
-
-
 }
