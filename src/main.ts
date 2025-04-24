@@ -10,7 +10,7 @@ async function bootstrap() {
 
 
   app.enableCors({
-    origin: ['http://localhost:5123'], // your Vite frontend dev server
+    origin: ['*'], // your Vite frontend dev server
    
   });
   
@@ -18,6 +18,8 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/', // URL: http://localhost:3000/uploads/archivo.jpg
   });
+
+
 
   const config = new DocumentBuilder()
     .setTitle('MokkaSoft Endpoints')

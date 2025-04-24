@@ -41,7 +41,7 @@ export class ToppingsController {
         const imageUrl = `https://backmks-production.up.railway.app/uploads/toppings/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
         // const imageUrl = `/uploads/toppings/${image.filename}`;
         const ToppingNewData= {...toppingNew, image: imageUrl };
-        //console.log('ToppingNewData:',ToppingNewData);
+        console.log('ToppingNewData:',ToppingNewData);
         return await this.toppingsService.createTopping(ToppingNewData);
       }
     
