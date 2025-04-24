@@ -10,4 +10,9 @@ export class CreateMilkDto {
   @IsInt()
   @IsPositive()
   price: number;
+
+
+  @ApiProperty({ required: false })
+  @IsString()
+  image?: string;
 }

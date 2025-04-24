@@ -10,4 +10,8 @@ export class CreateFlavourDto {
   @IsInt()
   @IsPositive()
   price: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  image?: string;
 }

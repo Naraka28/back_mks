@@ -48,4 +48,7 @@ export class CreateProductDto {
   @ApiProperty()
   @IsNumber()
   order: number;
+
+
+
 }
