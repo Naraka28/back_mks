@@ -26,10 +26,7 @@ export class ToppingsController {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
             const ext = extname(file.originalname);
             const name = file.originalname.split('.').slice(0, -1).join('.'); // nombre sin extension
-            // console.log('original',file.originalname);
-            // console.log('ext',ext);
-            // console.log('suffix',uniqueSuffix);
-            // console.log('fieldname',file.fieldname);
+            
             cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
           },
         }),
@@ -38,6 +35,7 @@ export class ToppingsController {
     async createTopping(
       @UploadedFile() image: Express.Multer.File,
       @Body() toppingNew: CreateToppingsDto): Promise<Toppings> {
+        console.log('toppingNewNoIMG:',toppingNew);
         const imageUrl = `https://backmks-production.up.railway.app/uploads/toppings/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
         // const imageUrl = `/uploads/toppings/${image.filename}`;
         const ToppingNewData= {...toppingNew, image: imageUrl };

@@ -37,6 +37,7 @@ export class ToppingsService {
     async createTopping(createTopping: CreateToppingsDto): Promise<Toppings> {
      try {
            const newTopping = this.toppingsRepository.create(createTopping);
+           console.log('newTopping:', newTopping);
            if (!newTopping) {
              throw new BadRequestException('Couldnt create new topping');
            }
