@@ -10,4 +10,8 @@ export class CreateSizeDto {
   @IsInt()
   @IsPositive()
   price: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  image?: string;
 }

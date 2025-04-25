@@ -9,9 +9,15 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FlavoursService } from './flavours.service';
 import { CreateFlavourDto } from './dto/create-flavour.dto';
+import { Flavours } from './entity/flavours.entity';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('flavours')
 export class FlavoursController {
@@ -57,49 +63,59 @@ export class FlavoursController {
     }
   }
 
-  @Post('create')
-  async createFlavour(@Body() createFlavourDto: CreateFlavourDto) {
-    try {
-      return await this.flavourService.createFlavour(createFlavourDto);
-    } catch (error) {
-      console.error('Error creating flavour:', error);
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new HttpException(
-        'Couldn´t create flavour',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-  @Put('update/:id')
-  async updateFlavour(
+   @Post('create')
+      @UseInterceptors(
+        FileInterceptor('image', {
+          storage: diskStorage({
+            destination: './uploads/flavors', // carpeta donde se guarda
+            filename: (req, file, cb) => {
+              const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+              const ext = extname(file.originalname);
+              const name = file.originalname.split('.').slice(0, -1).join('.'); 
+              
+              cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
+            },
+          }),
+        }),
+      )
+      async createTopping(
+        @UploadedFile() image: Express.Multer.File,
+        @Body() flavorNew: CreateFlavourDto): Promise<Flavours> {
+          const imageUrl = `https://backmks-production.up.railway.app/uploads/flavors/${image.filename}`; 
+          // const imageUrl = `/uploads/toppings/${image.filename}`;
+          const FlavorNewData= {...flavorNew, image: imageUrl };
+          console.log('flavorNewData:',FlavorNewData);
+          return await this.flavourService.createFlavour(FlavorNewData);
+        }
+
+    @Put('update/:id')
+    @UseInterceptors(
+     FileInterceptor('image', {
+        storage: diskStorage({
+          destination: './uploads/toppings',
+          filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+              const ext = extname(file.originalname);
+              const name = file.originalname.split('.').slice(0, -1).join('.'); 
+              cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
+          },
+        }),
+    }),
+  )
+  async updateTopping(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateFlavourDto: CreateFlavourDto, // Cambié a UpdateFlavourDto
-  ) {
-    try {
-      const updatedFlavour = await this.flavourService.updateFlavour(
-        id,
-        updateFlavourDto,
-      );
-      if (!updatedFlavour) {
-        throw new HttpException(
-          "Flavour not found or couldn't update",
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      return  updatedFlavour ;
-    } catch (error) {
-      console.error('Error updating flavour:', error);
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new HttpException(
-        'Couldn’t update flavour',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    @Body() updateFlavor: CreateFlavourDto,
+    @UploadedFile() image?: Express.Multer.File,
+  ): Promise<Flavours | null> {
+    if (image) {
+      const imageUrl = `https://backmks-production.up.railway.app/uploads/flavors/${image.filename}`; 
+      updateFlavor.image = imageUrl; // Actualiza la URL de la imagen en el DTO
     }
+  
+    return this.flavourService.updateFlavour(id, updateFlavor);
   }
+
+
   @Delete('delete/:id')
   async deleteFlavour(@Param('id', ParseIntPipe) id: number) {
     try {

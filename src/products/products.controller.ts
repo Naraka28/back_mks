@@ -5,7 +5,9 @@ import {   Body,
     Param,
     ParseIntPipe,
     Post,
-    Put, } from '@nestjs/common';
+    Put,
+    UploadedFile,
+    UseInterceptors, } from '@nestjs/common';
 import { Products } from './entity/products.entity';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-products.dto';
@@ -13,6 +15,9 @@ import { Flavours } from 'src/flavours/entity/flavours.entity';
 import { Milks } from 'src/milks/entity/milks.entity';
 import { Sizes } from 'src/sizes/entity/sizes.entity';
 import { Temps } from 'src/temps/entity/temps.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('products')
 export class ProductsController {
@@ -34,17 +39,60 @@ export class ProductsController {
     }
 
     @Post('create')
-    async createProduct(@Body() createProductDto: CreateProductDto): Promise<Products> {
-        return this.productsService.createProduct(createProductDto);
-    }
+    @UseInterceptors(
+      FileInterceptor('image', {
+        storage: diskStorage({
+          destination: './uploads/products', // carpeta donde se guarda
+          filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = extname(file.originalname);
+            const name = file.originalname.split('.').slice(0, -1).join('.'); // nombre sin extension
+            
+            cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
+          },
+        }),
+      }),
+    )
+    async createProduct(
+      @UploadedFile() image: Express.Multer.File,
+      @Body() productNew: CreateProductDto): Promise<Products> {
+        console.log('ProductNewNoIMG:',productNew);
+        const imageUrl = `https://backmks-production.up.railway.app/uploads/products/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
+        // const imageUrl = `/uploads/products/${image.filename}`;
+        const ProductNewData= {...productNew, image: imageUrl };
+        console.log('ProductNewData:',ProductNewData);
+        return await this.productsService.createProduct(ProductNewData);
+      }
 
-    @Put(':id')
-    async updateProduct(
-        @Param('id', ParseIntPipe) id: number,
-        @Body() updateProductDto: CreateProductDto,
-    ): Promise<Products | null> {
-        return this.productsService.updateProduct(id, updateProductDto);
-    }
+
+
+    
+  @Put('update/:id')
+  @UseInterceptors(
+   FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/products',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = extname(file.originalname);
+            const name = file.originalname.split('.').slice(0, -1).join('.'); 
+            cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
+        },
+      }),
+  }),
+)
+async updateProduct(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() updateProductDto: CreateProductDto,
+  @UploadedFile() image?: Express.Multer.File,
+): Promise<Products | null> {
+  if (image) {
+    const imageUrl = `https://backmks-production.up.railway.app/uploads/products/${image.filename}`; 
+    updateProductDto.image = imageUrl; // Actualiza la URL de la imagen en el DTO
+  }
+  console.log('updateProductDto:',updateProductDto);
+  return this.productsService.updateProduct(id, updateProductDto);
+}
 
     @Delete(':id')
     async deleteProduct(

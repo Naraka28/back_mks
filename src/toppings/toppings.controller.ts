@@ -49,13 +49,6 @@ export class ToppingsController {
     }
     
 
-    // @Put('update/:id')
-    // async updateTopping(
-    //   @Param('id', ParseIntPipe) id: number,
-    //   @Body() updateToppingDto: CreateToppingsDto,
-    // ): Promise<Toppings | null> {
-    //   return this.toppingsService.updateTopping(id, updateToppingDto);
-    // }
 
   @Put('update/:id')
   @UseInterceptors(
@@ -65,11 +58,7 @@ export class ToppingsController {
         filename: (req, file, cb) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
             const ext = extname(file.originalname);
-            const name = file.originalname.split('.').slice(0, -1).join('.'); // nombre sin extension
-            // console.log('original',file.originalname);
-            // console.log('ext',ext);
-            // console.log('suffix',uniqueSuffix);
-            // console.log('fieldname',file.fieldname);
+            const name = file.originalname.split('.').slice(0, -1).join('.'); 
             cb(null, `${file.fieldname}-${name}-${uniqueSuffix}${ext}`);
         },
       }),
@@ -88,9 +77,7 @@ async updateTopping(
   return this.toppingsService.updateTopping(id, updateToppingDto);
 }
 
-
-  
-    @Delete('delete/:id')
+@Delete('delete/:id')
     async deleteTopping(
       @Param('id', ParseIntPipe) id: number,
     ): Promise<{ message: string }> {

@@ -120,7 +120,7 @@ export class ProductsService {
             toppings,
             milks,
         } = updateProduct;
-    
+        console.log('bandera 1',);
         // Buscar entidades relacionadas
         const typeEntity = await this.productTypeRepository.findOne({ where: { id: type } });
         if (!typeEntity) throw new BadRequestException('Invalid product type');
@@ -130,24 +130,30 @@ export class ProductsService {
         const tempsEntities = await this.tempsRepository.findBy({ id: In(temp) });
         const toppingsEntities = await this.toppingsRepository.findBy({ id: In(toppings) });
         const milksEntities = await this.milksRepository.findBy({ id: In(milks) });
-    
+       
         // Actualizar instancia del producto
-        const result = await this.productsRepository.update(id, {
-            name,
-            base_price,
-            image,
-            type: typeEntity,
-            flavours: flavoursEntities,
-            sizes: sizesEntities,
-            temp: tempsEntities,
-            toppings: toppingsEntities,
-            milks: milksEntities,
-        });
-    
-        if (result.affected === 0) {
+        const product = await this.productsRepository.findOne({
+            where: { id },
+            relations: ['flavours', 'sizes', 'temp', 'toppings', 'milks', 'type'],
+          });
+          
+          if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);
-        }
+          }
+          
+          product.name = name;
+          product.base_price = base_price;
+          product.image = image;
+          product.type = typeEntity;
+          product.flavours = flavoursEntities;
+          product.sizes = sizesEntities;
+          product.temp = tempsEntities;
+          product.toppings = toppingsEntities;
+          product.milks = milksEntities;
+          
+          await this.productsRepository.save(product);
     
+        console.log('updated product:',product);
         return await this.productsRepository.findOne({
             where: { id },
             relations: ['flavours', 'sizes', 'temp', 'toppings', 'milks', 'type'],
