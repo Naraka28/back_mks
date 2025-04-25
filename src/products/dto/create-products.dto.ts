@@ -19,6 +19,7 @@ export class CreateProductDto {
 
   @ApiProperty()
   @IsNumber()
+  @IsPositive()
   type: number;
 
   @ApiProperty()
@@ -27,26 +28,37 @@ export class CreateProductDto {
 
   @ApiProperty()
   @IsArray()
+  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   flavours: number[];
 
   @ApiProperty()
   @IsArray()
+  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   sizes: number[];
 
   @ApiProperty()
   @IsArray()
+  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   temp: number[];
 
   @ApiProperty()
   @IsArray()
+  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   toppings: number[];
 
   @ApiProperty()
   @IsArray()
+  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   milks: number[];
 
   @ApiProperty()
   @IsNumber()
+  @IsPositive()
   order: number;
 
 

@@ -90,7 +90,7 @@ async updateProduct(
     const imageUrl = `https://backmks-production.up.railway.app/uploads/products/${image.filename}`; 
     updateProductDto.image = imageUrl; // Actualiza la URL de la imagen en el DTO
   }
-
+  console.log('updateProductDto:',updateProductDto);
   return this.productsService.updateProduct(id, updateProductDto);
 }
 
