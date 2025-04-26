@@ -571,7 +571,7 @@ export class TicketsService {
         .getMany();
 
       if (tickets.length === 0) {
-        throw new NotFoundException('No hay tickets pendientes hoy');
+        throw new NotFoundException('No hay tickets pendientes :)');
       }
 
       return tickets;
@@ -621,7 +621,7 @@ export class TicketsService {
     }
   }
 
-  async payTicket(id: number): Promise<Tickets> {
+  async payTicket(id: number): Promise<{ message: string }> {
     const ticket = await this.ticketsRepository.findOne({
       where: {
         id,
@@ -631,9 +631,10 @@ export class TicketsService {
       throw new NotFoundException(`Ticket with ID: $${id} not found`);
     }
     ticket.status = TicketStatus.COMPLETADO;
-    return this.ticketsRepository.save(ticket);
+    await this.ticketsRepository.save(ticket);
+    return { message: `Pago completado de Ticket #${id}` };
   }
-  async cancelTicket(id: number): Promise<Tickets> {
+  async cancelTicket(id: number): Promise<{ message: string }> {
     const ticket = await this.ticketsRepository.findOne({
       where: {
         id,
@@ -643,6 +644,7 @@ export class TicketsService {
       throw new NotFoundException(`Ticket with ID: $${id} not found`);
     }
     ticket.status = TicketStatus.CANCELADO;
-    return this.ticketsRepository.save(ticket);
+    await this.ticketsRepository.save(ticket);
+    return { message: `Ticket #${id} cancelado` };
   }
 }

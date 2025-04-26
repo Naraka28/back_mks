@@ -5,11 +5,11 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
-import { create } from 'domain';
 import { CreateTicketDto } from './dto/create-tickets.dto';
 import { Tickets } from './entity/tickets.entity';
 
@@ -121,6 +121,14 @@ export class TicketsController {
       from,
       to,
     );
+  }
+  @Patch('pay')
+  async payTicket(@Body('id', ParseIntPipe) id: number) {
+    return this.ticketsService.payTicket(id);
+  }
+  @Patch('cancel')
+  async cancelTicket(@Body('id', ParseIntPipe) id: number) {
+    return this.ticketsService.cancelTicket(id);
   }
 
   @Get(':id')
