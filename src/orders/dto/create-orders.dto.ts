@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, ValidateNested } from 'class-validator';
+import { IsArray, IsInt, IsString, ValidateNested } from 'class-validator';
 import { ToppingOrderDto } from 'src/toppings/dto/create-toppings-orders.dto';
 
 export class CreateOrderDto {
@@ -33,4 +33,8 @@ export class CreateOrderDto {
   @ApiProperty()
   @IsInt()
   cashierId: number;
+
+  @ApiProperty()
+  @IsString()
+  payment_method: string;
 }

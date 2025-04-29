@@ -542,7 +542,7 @@ export class TicketsService {
 
   async getTodayPendingTickets(): Promise<Tickets[]> {
     try {
-      const utcDate = new Date().toLocaleDateString('en-CA');
+      const utcDate = new Date();
       const tickets = await this.ticketsRepository
         .createQueryBuilder('ticket')
         .leftJoinAndSelect('ticket.cashier', 'cashier')
@@ -583,7 +583,7 @@ export class TicketsService {
 
   async getTodayCompletedTickets(): Promise<Tickets[]> {
     try {
-      const utcDate = new Date().toLocaleDateString('en-CA');
+      const utcDate = new Date();
       const tickets = await this.ticketsRepository
         .createQueryBuilder('ticket')
         .leftJoinAndSelect('ticket.cashier', 'cashier')
@@ -641,7 +641,7 @@ export class TicketsService {
       },
     });
     if (!ticket) {
-      throw new NotFoundException(`Ticket with ID: $${id} not found`);
+      throw new NotFoundException(`Ticket with ID: #${id} not found`);
     }
     ticket.status = TicketStatus.CANCELADO;
     await this.ticketsRepository.save(ticket);

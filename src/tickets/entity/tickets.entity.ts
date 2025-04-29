@@ -9,9 +9,9 @@ import {
 } from 'typeorm';
 
 export enum TicketStatus {
-  PENDIENTE = 'PENDIENTE',
-  COMPLETADO = 'COMPLETADO',
-  CANCELADO = 'CANCELADO',
+  PENDIENTE = 'Pendiente',
+  COMPLETADO = 'Completado',
+  CANCELADO = 'Cancelado',
 }
 
 @Entity()
