@@ -17,13 +17,13 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/', // URL: http://localhost:3000/uploads/archivo.jpg
   });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true, // opcional, más estricto
-    }),
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     //transform: true,
+  //     // whitelist: true,
+  //     // forbidNonWhitelisted: true, // opcional, más estricto
+  //   }),
+  // );
 
   const config = new DocumentBuilder()
     .setTitle('MokkaSoft Endpoints')
