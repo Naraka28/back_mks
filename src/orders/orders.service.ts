@@ -165,8 +165,7 @@ export class OrdersService {
           );
         }
         const ticket = new Tickets();
-        const utcDate = new Date().toLocaleDateString('en-CA');
-        ticket.ticket_date = new Date(utcDate);
+        ticket.ticket_date = new Date();
         ticket.cashier = cashier;
         ticket.total = 0;
         ticket.orders = [];
