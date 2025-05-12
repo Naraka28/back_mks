@@ -7,7 +7,9 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('login')
-  async singIn(@Body() user: AuthDto): Promise<{ access_token: string }> {
+  async singIn(
+    @Body() user: AuthDto,
+  ): Promise<{ access_token: string; email: string; name: string }> {
     return this.authService.logIn(user);
   }
 
