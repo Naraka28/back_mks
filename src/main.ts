@@ -17,6 +17,14 @@ async function bootstrap() {
     prefix: '/uploads/', // URL: http://localhost:3000/uploads/archivo.jpg
   });
 
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     //transform: true,
+  //     // whitelist: true,
+  //     // forbidNonWhitelisted: true, // opcional, más estricto
+  //   }),
+  // );
+
   const config = new DocumentBuilder()
     .setTitle('MokkaSoft Endpoints')
     .setDescription('MokkaSoft API Endpoints')

@@ -1,5 +1,6 @@
 import { Flavours } from 'src/flavours/entity/flavours.entity';
 import { Milks } from 'src/milks/entity/milks.entity';
+import { OrderToppings } from 'src/order_toppings/entity/order_toppings.entity';
 import { Products } from 'src/products/entity/products.entity';
 import { Sizes } from 'src/sizes/entity/sizes.entity';
 import { Temps } from 'src/temps/entity/temps.entity';
@@ -12,6 +13,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -24,9 +26,12 @@ export class Orders {
   product: Products;
   @Column()
   price: number;
-  @ManyToMany(() => Toppings, { onDelete: 'CASCADE' })
-  @JoinTable({ name: 'order_toppings' })
-  toppings: Toppings[];
+
+
+  @OneToMany(() => OrderToppings, (orderTopping) => orderTopping.order, { cascade: true })
+  orderToppings: OrderToppings[];
+
+
   @ManyToOne(() => Tickets)
   @JoinColumn({ name: 'ticketId' })
   ticket: Tickets;
