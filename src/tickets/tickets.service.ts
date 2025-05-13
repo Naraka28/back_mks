@@ -357,6 +357,37 @@ export class TicketsService {
       );
     }
   }
+  
+  async getLastYearTickets(): Promise<Tickets[]> {
+    try {
+      const today = new Date();
+      const lastYear = new Date(
+        today.getFullYear() - 1,
+        today.getMonth(),
+        today.getDate(),
+      );
+
+      const tickets = await this.ticketsRepository.find({
+        where: { ticket_date: Between(today, lastYear) },
+        relations: ['orders', 'cashier'],
+      });
+
+      if (tickets.length === 0) {
+        throw new NotFoundException('No tickets found for last year');
+      }
+
+      return tickets;
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        `Unexpected error fetching tickets: ${error.message}`,
+      );
+    }
+  
+  }
 
   async getTicketsByDateRange(from: Date, to: Date): Promise<Tickets[]> {
     try {
@@ -529,6 +560,57 @@ export class TicketsService {
       }
 
       return tickets;
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        `Unexpected error fetching tickets: ${error.message}`,
+      );
+    }
+  }
+
+
+  async getTotalFromAllTickets():Promise<number>{
+    try {
+      const tickets = await this.ticketsRepository.find({
+        relations: ['orders', 'cashier'],
+      });
+
+      if (tickets.length === 0) {
+        throw new NotFoundException('No tickets found');
+      }
+
+      const total = tickets.reduce((acc, ticket) => acc + ticket.total, 0);
+      return total;
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        `Unexpected error fetching tickets: ${error.message}`,
+      );
+    }
+  }
+
+
+
+  async getTotalFromTodayTickets():Promise<number>{
+    try {
+      const today = new Date();
+      const tickets = await this.ticketsRepository.find({
+        where: { ticket_date: today },
+        relations: ['orders', 'cashier'],
+      });
+
+      if (tickets.length === 0) {
+        throw new NotFoundException('No tickets found for today');
+      }
+
+      const total = tickets.reduce((acc, ticket) => acc + ticket.total, 0);
+      return total;
     } catch (error) {
       console.error('Error fetching tickets:', error);
       if (error instanceof NotFoundException) {
