@@ -37,12 +37,12 @@ export class TicketsController {
     return this.ticketsService.getTodayTickets();
   }
 
-  @Get('last_month/')
+  @Get('last_month')
   async getLastMonthTickets() {
     return this.ticketsService.getLastMonthTickets();
   }
 
-  @Get('last_week/')
+  @Get('last_week')
   async getLastWeekTickets() {
     return this.ticketsService.getLastWeekTickets();
   }
@@ -95,6 +95,22 @@ export class TicketsController {
       ticketDate,
     );
   }
+
+  @Get('totalAll')
+  async getTotalTickets() {
+    return this.ticketsService.getTotalFromAllTickets();
+  }
+
+  @Get('totalFromToday')
+  async getTotalTicketsFromToday() {
+    return this.ticketsService.getTotalFromTodayTickets();
+  }
+
+  @Get('last_year')
+  async getLastYearTickets() {
+    return this.ticketsService.getLastYearTickets();
+  }
+
   @Get('cashier/:cashierId/date_range/:from/:to')
   async getTicketsByCashierAndDateRange(
     @Param('cashierId') cashierId: number,
