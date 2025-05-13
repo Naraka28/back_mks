@@ -1,13 +1,5 @@
-import { Orders } from 'src/orders/entity/orders.entity';
 import { Products } from 'src/products/entity/products.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Toppings {
@@ -27,6 +19,6 @@ export class Toppings {
   @ManyToMany(() => Products, (product) => product.toppings)
   products: Products[];
 
-  @ManyToMany(() => Orders)
-  orders: Orders[];
+  // @ManyToMany(() => Orders)
+  // orders: Orders[];
 }

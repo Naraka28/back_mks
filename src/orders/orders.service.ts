@@ -16,6 +16,7 @@ import { Tickets, TicketStatus } from 'src/tickets/entity/tickets.entity';
 import { Toppings } from 'src/toppings/entity/toppings.entity';
 import { User } from 'src/users/entity/user.entity';
 import { ToppingOrderDto } from 'src/toppings/dto/create-toppings-orders.dto';
+import { OrderToppings } from 'src/order_toppings/entity/order_toppings.entity';
 
 @Injectable()
 export class OrdersService {
@@ -30,7 +31,7 @@ export class OrdersService {
       const result = await this.ordersRepository.find({
         relations: [
           'product',
-          'toppings',
+          'orderToppings',
           'ticket',
           'flavour',
           'size',
@@ -135,20 +136,64 @@ export class OrdersService {
         flavour.price +
         toppingsPrice;
 
-      const newOrder = {
+      const newOrder = transactionalEntityManager.create(Orders, {
         product,
         flavour,
         size,
         temp,
         milk,
-        toppings,
         ticket,
         price,
-      };
-      return await transactionalEntityManager.save(Orders, newOrder);
+      });
+
+      const savedOrder = await transactionalEntityManager.save(
+        Orders,
+        newOrder,
+      );
+
+      const orderToppings: OrderToppings[] = [];
+
+      for (const toppingDto of order.toppings) {
+        const topping = toppings.find((t) => t.id === toppingDto.id);
+        if (!topping) continue;
+
+        orderToppings.push(
+          transactionalEntityManager.create(OrderToppings, {
+            order: { id: savedOrder.id },
+            topping: { id: topping.id },
+            quantity: toppingDto.quantity,
+          }),
+        );
+      }
+
+      await transactionalEntityManager.save(OrderToppings, orderToppings);
+
+      const savedOrderWithRelations = await transactionalEntityManager.findOne(
+        Orders,
+        {
+          where: { id: savedOrder.id },
+          relations: {
+            product: true,
+            flavour: true,
+            size: true,
+            temp: true,
+            milk: true,
+            orderToppings: {
+              topping: true,
+            },
+            ticket: true,
+          },
+        },
+      );
+
+      if (!savedOrderWithRelations) {
+        throw new Error('Order not found after creation');
+      }
+      return savedOrderWithRelations;
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException(`Unexpected error creating Order`);
+      if (error instanceof NotFoundException) throw error;
+      throw error;
     }
   }
   async createOrderWithTicket(
@@ -201,16 +246,14 @@ export class OrdersService {
             'orders.flavour',
             'orders.size',
             'orders.milk',
-            'orders.toppings',
+            'orders.orderToppings',
             'orders.temp',
           ],
         });
       });
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException(
-        'Unexpected error creating Orders',
-      );
+      throw error;
     }
   }
   private calculateToppingsPrice(

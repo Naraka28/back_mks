@@ -6,24 +6,27 @@ import { OrderToppings } from './entity/order_toppings.entity';
 export class OrderToppingsController {
   constructor(private readonly orderToppingsService: OrderToppingsService) {}
 
-@Get()
-async findAll(): Promise<OrderToppings[]> {
-return this.orderToppingsService.findAll();
-}
+  @Get()
+  async findAll(): Promise<OrderToppings[]> {
+    return this.orderToppingsService.findAll();
+  }
 
-@Get(':id')
-async findOne(@Param('id') id: number): Promise<OrderToppings | null> {
-return this.orderToppingsService.findOne(id);
-}
+  @Get(':id')
+  async findOne(@Param('id') id: number): Promise<OrderToppings | null> {
+    return this.orderToppingsService.findOne(id);
+  }
 
-@Get('order/:orderId')
-async findByOrderId(@Param('orderId') orderId: number): Promise<OrderToppings[]> {
-return this.orderToppingsService.findByOrderId(orderId);
-}
+  @Get('order/:orderId')
+  async findByOrderId(
+    @Param('orderId') orderId: number,
+  ): Promise<OrderToppings[]> {
+    return this.orderToppingsService.findByOrderId(orderId);
+  }
 
-@Post()
-async create(@Body() orderTopping: Partial<OrderToppings>): Promise<OrderToppings> {
-return this.orderToppingsService.create(orderTopping);
-}
-
+  @Post()
+  async create(
+    @Body() orderTopping: Partial<OrderToppings>,
+  ): Promise<OrderToppings> {
+    return this.orderToppingsService.create(orderTopping);
+  }
 }

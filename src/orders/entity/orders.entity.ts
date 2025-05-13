@@ -5,13 +5,10 @@ import { Products } from 'src/products/entity/products.entity';
 import { Sizes } from 'src/sizes/entity/sizes.entity';
 import { Temps } from 'src/temps/entity/temps.entity';
 import { Tickets } from 'src/tickets/entity/tickets.entity';
-import { Toppings } from 'src/toppings/entity/toppings.entity';
 import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -27,10 +24,10 @@ export class Orders {
   @Column()
   price: number;
 
-
-  @OneToMany(() => OrderToppings, (orderTopping) => orderTopping.order, { cascade: true })
+  @OneToMany(() => OrderToppings, (orderTopping) => orderTopping.order, {
+    cascade: true,
+  })
   orderToppings: OrderToppings[];
-
 
   @ManyToOne(() => Tickets)
   @JoinColumn({ name: 'ticketId' })
