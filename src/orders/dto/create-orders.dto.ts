@@ -6,18 +6,22 @@ import { ToppingOrderDto } from 'src/toppings/dto/create-toppings-orders.dto';
 export class CreateOrderDto {
   @ApiProperty()
   @IsInt()
+  @Type(() => Number)
   productId: number;
 
   @ApiProperty()
   @IsInt()
+  @Type(() => Number)
   flavoursId: number;
 
   @ApiProperty()
   @IsInt()
+  @Type(() => Number)
   sizesId: number;
 
   @ApiProperty()
   @IsInt()
+  @Type(() => Number)
   tempId: number;
 
   @ApiProperty()
@@ -28,10 +32,12 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @IsInt()
+  @Type(() => Number)
   milksId: number;
 
   @ApiProperty()
   @IsInt()
+  @Type(() => Number)
   cashierId: number;
 
   @ApiProperty()

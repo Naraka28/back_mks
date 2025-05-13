@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Orders } from './entity/orders.entity';
@@ -21,7 +22,9 @@ export class OrdersController {
   }
 
   @Post('create')
-  async createOrder(@Body() orders: CreateOrderDto[]) {
+  async createOrder(
+    @Body(new ValidationPipe({ transform: true })) orders: CreateOrderDto[],
+  ) {
     return this.ordersServive.createOrderWithTicket(orders);
   }
 
