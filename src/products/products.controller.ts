@@ -18,6 +18,7 @@ import { Temps } from 'src/temps/entity/temps.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Toppings } from 'src/toppings/entity/toppings.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -116,6 +117,10 @@ async updateProduct(
         return this.productsService.getProductsByTemp(tempId);
     }
     
+    @Get('allowed_toppings/:productId')
+    async getAllowedToppings(@Param('productId', ParseIntPipe) productId: number): Promise<Toppings[]> {
+        return this.productsService.getProductAllowedToppings(productId);
+    }
 
     @Get('allowed_flavours/:productId')
     async getAllowedFlavours(@Param('productId', ParseIntPipe) productId: number): Promise<Flavours[]> {
