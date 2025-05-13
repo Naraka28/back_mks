@@ -29,7 +29,7 @@ export class TicketsService {
         .leftJoin('orders.flavour', 'flavour')
         .leftJoin('orders.size', 'size')
         .leftJoin('orders.milk', 'milk')
-        .leftJoin('orders.toppings', 'toppings')
+        .leftJoin('orders.orderToppings', 'toppings')
         .leftJoin('orders.temp', 'temp')
         .select([
           'ticket',
@@ -49,6 +49,7 @@ export class TicketsService {
           'toppings.name',
           'temp.id',
           'temp.name',
+          'toppings.quantity',
         ])
         .getMany();
       if (result.length === 0) {
@@ -549,7 +550,7 @@ export class TicketsService {
         .leftJoinAndSelect('ticket.orders', 'orders')
         .leftJoinAndSelect('orders.flavour', 'flavour')
         .leftJoinAndSelect('orders.product', 'product')
-        .leftJoinAndSelect('orders.toppings', 'toppings')
+        .leftJoinAndSelect('orders.orderToppings', 'toppings')
         .leftJoinAndSelect('orders.temp', 'temps')
         .leftJoinAndSelect('orders.milk', 'milks')
         .leftJoinAndSelect('orders.size', 'sizes')
@@ -565,6 +566,7 @@ export class TicketsService {
           'sizes.name',
           'flavour.name',
           'toppings.name',
+          'toppings.quantity',
         ])
         .where('ticket.status = :status', { status: TicketStatus.PENDIENTE })
         .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })
@@ -590,7 +592,7 @@ export class TicketsService {
         .leftJoinAndSelect('ticket.orders', 'orders')
         .leftJoinAndSelect('orders.flavour', 'flavour')
         .leftJoinAndSelect('orders.product', 'product')
-        .leftJoinAndSelect('orders.toppings', 'toppings')
+        .leftJoinAndSelect('orders.orderToppings', 'toppings')
         .leftJoinAndSelect('orders.temp', 'temps')
         .leftJoinAndSelect('orders.milk', 'milks')
         .leftJoinAndSelect('orders.size', 'sizes')
@@ -606,6 +608,7 @@ export class TicketsService {
           'sizes.name',
           'flavour.name',
           'toppings.name',
+          'toppings.quantity',
         ])
         .where('ticket.status = :status', { status: TicketStatus.COMPLETADO })
         .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })

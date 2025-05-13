@@ -7,7 +7,6 @@ import { User } from 'src/users/entity/user.entity';
 import { OrderToppingsModule } from 'src/order_toppings/order_toppings.module';
 import { OrderToppings } from 'src/order_toppings/entity/order_toppings.entity';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([Orders, User, OrderToppings]),
