@@ -29,7 +29,8 @@ export class TicketsService {
         .leftJoin('orders.flavour', 'flavour')
         .leftJoin('orders.size', 'size')
         .leftJoin('orders.milk', 'milk')
-        .leftJoin('orders.orderToppings', 'toppings')
+        .leftJoin('orders.orderToppings', 'orderToppings')
+        .leftJoin('orderToppings.topping', 'toppings')
         .leftJoin('orders.temp', 'temp')
         .select([
           'ticket',
@@ -49,7 +50,7 @@ export class TicketsService {
           'toppings.name',
           'temp.id',
           'temp.name',
-          'toppings.quantity',
+          'orderToppings.quantity',
         ])
         .getMany();
       if (result.length === 0) {
@@ -358,7 +359,7 @@ export class TicketsService {
       );
     }
   }
-  
+
   async getLastYearTickets(): Promise<Tickets[]> {
     try {
       const today = new Date();
@@ -387,7 +388,6 @@ export class TicketsService {
         `Unexpected error fetching tickets: ${error.message}`,
       );
     }
-  
   }
 
   async getTicketsByDateRange(from: Date, to: Date): Promise<Tickets[]> {
@@ -572,8 +572,7 @@ export class TicketsService {
     }
   }
 
-
-  async getTotalFromAllTickets():Promise<number>{
+  async getTotalFromAllTickets(): Promise<number> {
     try {
       const tickets = await this.ticketsRepository.find({
         relations: ['orders', 'cashier'],
@@ -596,9 +595,7 @@ export class TicketsService {
     }
   }
 
-
-
-  async getTotalFromTodayTickets():Promise<number>{
+  async getTotalFromTodayTickets(): Promise<number> {
     try {
       const today = new Date();
       const tickets = await this.ticketsRepository.find({
@@ -632,7 +629,8 @@ export class TicketsService {
         .leftJoinAndSelect('ticket.orders', 'orders')
         .leftJoinAndSelect('orders.flavour', 'flavour')
         .leftJoinAndSelect('orders.product', 'product')
-        .leftJoinAndSelect('orders.orderToppings', 'toppings')
+        .leftJoinAndSelect('orders.orderToppings', 'orderToppings')
+        .leftJoinAndSelect('orderToppings.topping', 'toppings')
         .leftJoinAndSelect('orders.temp', 'temps')
         .leftJoinAndSelect('orders.milk', 'milks')
         .leftJoinAndSelect('orders.size', 'sizes')
@@ -648,7 +646,7 @@ export class TicketsService {
           'sizes.name',
           'flavour.name',
           'toppings.name',
-          'toppings.quantity',
+          'orderToppings.quantity',
         ])
         .where('ticket.status = :status', { status: TicketStatus.PENDIENTE })
         .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })
@@ -674,7 +672,8 @@ export class TicketsService {
         .leftJoinAndSelect('ticket.orders', 'orders')
         .leftJoinAndSelect('orders.flavour', 'flavour')
         .leftJoinAndSelect('orders.product', 'product')
-        .leftJoinAndSelect('orders.orderToppings', 'toppings')
+        .leftJoinAndSelect('orders.orderToppings', 'orderToppings')
+        .leftJoinAndSelect('orderToppings.topping', 'toppings')
         .leftJoinAndSelect('orders.temp', 'temps')
         .leftJoinAndSelect('orders.milk', 'milks')
         .leftJoinAndSelect('orders.size', 'sizes')
@@ -690,14 +689,15 @@ export class TicketsService {
           'sizes.name',
           'flavour.name',
           'toppings.name',
-          'toppings.quantity',
+          'orderToppings.quantity',
         ])
         .where('ticket.status = :status', { status: TicketStatus.COMPLETADO })
         .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })
         .getMany();
 
-      if (tickets.length === 0)
-        throw new NotFoundException(`Theres no completed tickets`);
+      if (tickets.length === 0) {
+        throw new NotFoundException(`No hay tickets completados :(`);
+      }
 
       return tickets;
     } catch (error) {
