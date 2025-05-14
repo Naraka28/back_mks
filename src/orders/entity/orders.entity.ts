@@ -18,9 +18,13 @@ import {
 export class Orders {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne(() => Products, (product) => product.order)
+
+  @ManyToOne(() => Products, (product) => product.order, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   product: Products;
+
   @Column()
   price: number;
 
@@ -29,22 +33,33 @@ export class Orders {
   })
   orderToppings: OrderToppings[];
 
-  @ManyToOne(() => Tickets)
+  @ManyToOne(() => Tickets, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'ticketId' })
   ticket: Tickets;
-  @ManyToOne(() => Flavours)
+
+  @ManyToOne(() => Flavours, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   flavour: Flavours;
 
-  @ManyToOne(() => Sizes)
+  @ManyToOne(() => Sizes, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   size: Sizes;
 
-  @ManyToOne(() => Milks)
+  @ManyToOne(() => Milks, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   milk: Milks;
 
-  @ManyToOne(() => Temps)
+  @ManyToOne(() => Temps, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   temp: Temps;
 }

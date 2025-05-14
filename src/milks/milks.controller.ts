@@ -19,7 +19,10 @@ import { extname } from 'path';
 
 @Controller('milks')
 export class MilksController {
-  constructor(private milksService: MilksService) {}
+
+  
+  constructor(private milksService: MilksService)  { } 
+
 
   @Get()
   async getMilks(): Promise<Milks[]> {
