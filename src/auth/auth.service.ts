@@ -13,8 +13,8 @@ import { AuthDto } from './dto/auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
   saltOrRounds: number = 10;
 
@@ -29,11 +29,12 @@ export class AuthService {
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }
+
+
   async logIn(
     user: AuthDto,
-  ): Promise<{ access_token: string; email: string; name: string }> {
+  ): Promise<{ access_token: string; email: string; name: string, role: string }> {
     const cashierMatched = await this.usersService.findByEmail(user.email);
-
     if (!cashierMatched)
       throw new NotFoundException('Email or password are wrong');
 
@@ -54,6 +55,7 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
       name: cashierMatched.name,
       email: cashierMatched.email,
+      role: cashierMatched.role.role,
     };
   }
 }

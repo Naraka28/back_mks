@@ -12,7 +12,7 @@ import { CreateRolesDto } from './dto/create-roles.dto';
 @Injectable()
 export class RolesService {
   constructor(
-    @InjectRepository(Roles) private rolesRepository: Repository<Roles>,
+    @InjectRepository(Roles) private readonly rolesRepository: Repository<Roles>,
   ) {}
   async findAll(): Promise<Roles[]> {
     try {

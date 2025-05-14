@@ -39,7 +39,7 @@ export class FlavoursService {
 
   async deleteFlavour(id:number){
     try {
-      await this.FlavoursRepository.softDelete(id);
+      await this.FlavoursRepository.delete(id);
     } catch (error) {
       console.error('Error al eliminar el id:', error);
       throw new HttpException('No se pudo eliminar el sabor', HttpStatus.INTERNAL_SERVER_ERROR);

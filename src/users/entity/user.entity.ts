@@ -20,7 +20,7 @@ export class User {
   email: string;
   @Column()
   password: string;
-  @ManyToOne(() => Roles, (role) => role.users, { nullable: false })
+  @ManyToOne(() => Roles, (role) => role.users, { nullable: false })  
   @JoinColumn()
   role: Roles;
   @OneToMany(() => Tickets, (ticket) => ticket.cashier)

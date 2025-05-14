@@ -5,17 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import {  Repository } from 'typeorm';
 import { User } from './entity/user.entity';
-import { RoleList, Roles } from 'src/roles/entity/roles.entity';
+import { Roles } from 'src/roles/entity/roles.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    @InjectRepository(Roles) private rolesRepository: Repository<Roles>,
+    private readonly usersRepository: Repository<User>,
+    @InjectRepository(Roles) private readonly rolesRepository: Repository<Roles>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -24,7 +24,7 @@ export class UsersService {
         relations: { role: true },
       });
       if (users.length === 0) {
-        throw new NotFoundException('Milks not founded');
+        throw new NotFoundException('users not founded');
       }
       return users;
     } catch (error) {
@@ -45,28 +45,46 @@ export class UsersService {
       );
     }
   }
+ 
   async createUser(userDto: CreateUserDto): Promise<User> {
-    try {
-      const role = await this.rolesRepository.findOne({
-        where: { id: userDto.roleId },
-      });
-      if (!role) {
-        throw new NotFoundException(`Role with ID ${userDto.roleId} not found`);
-      }
-      const { roleId, ...userData } = userDto;
+  try {
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: userDto.email },
+    });
 
-      const newUser = this.usersRepository.create({ ...userData, role });
-      if (!newUser) {
-        throw new BadRequestException(
-          `Couldnt create new User with name ${userDto.name}`,
-        );
-      }
-      return this.usersRepository.save(newUser);
-    } catch (error) {
-      console.error(error);
-      throw new InternalServerErrorException('Unexpected error creating user');
+    if (existingUser) {
+      throw new BadRequestException(
+        `User with email ${userDto.email} already exists`,
+      );
     }
+
+    const role = await this.rolesRepository.findOne({
+      where: { id: userDto.roleId },
+    });
+
+    if (!role) {
+      throw new NotFoundException(`Role with ID ${userDto.roleId} not found`);
+    }
+
+    const { roleId, ...userData } = userDto;
+
+    const newUser = this.usersRepository.create({
+      ...userData,
+      role, // Aquí asignas la entidad completa
+    });
+
+    if (!newUser) {
+      throw new BadRequestException('Couldnt create new User');
+    }
+    return await this.usersRepository.save(newUser);
+  } catch (error) {
+    console.error(error);
+    throw new InternalServerErrorException('Unexpected error creating user');
   }
+}
+
+
+
   async updateUser(
     id: number,
     updateUser: CreateUserDto,
@@ -114,12 +132,14 @@ export class UsersService {
     try {
       const user = await this.usersRepository.findOne({
         where: { email },
+        relations: { role: true },
       });
       if (!user) {
         throw new NotFoundException(`Email for not found`);
       }
       return user;
     } catch (error) {
+      console.error('Error fetching user by email', error);
       throw new InternalServerErrorException(
         'Unexpected error at finding email',
       );

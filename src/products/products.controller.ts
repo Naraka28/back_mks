@@ -22,7 +22,7 @@ import { Toppings } from 'src/toppings/entity/toppings.entity';
 
 @Controller('products')
 export class ProductsController {
-    constructor(private productsService: ProductsService) {}
+    constructor(private readonly productsService: ProductsService) {}
 
     @Get()
     async getProducts(): Promise<Products[]> {
