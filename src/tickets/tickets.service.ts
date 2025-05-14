@@ -734,30 +734,50 @@ export class TicketsService {
     return { message: `Ticket #${id} cancelado` };
   }
 
+  async getTodayCanceledTickets(): Promise<Tickets[]> {
+    try {
+      const utcDate = new Date();
+      const tickets = await this.ticketsRepository
+        .createQueryBuilder('ticket')
+        .leftJoinAndSelect('ticket.cashier', 'cashier')
+        .leftJoinAndSelect('ticket.orders', 'orders')
+        .leftJoinAndSelect('orders.flavour', 'flavour')
+        .leftJoinAndSelect('orders.product', 'product')
+        .leftJoinAndSelect('orders.orderToppings', 'orderToppings')
+        .leftJoinAndSelect('orderToppings.topping', 'toppings')
+        .leftJoinAndSelect('orders.temp', 'temps')
+        .leftJoinAndSelect('orders.milk', 'milks')
+        .leftJoinAndSelect('orders.size', 'sizes')
+        .select([
+          'ticket',
+          'cashier.id',
+          'cashier.name',
+          'orders.id',
+          'orders.price',
+          'product.name',
+          'temps.name',
+          'milks.name',
+          'sizes.name',
+          'flavour.name',
+          'toppings.name',
+          'orderToppings.quantity',
+        ])
+        .where('ticket.status = :status', { status: TicketStatus.COMPLETADO })
+        .andWhere('ticket.ticket_date = :ticket_date', { ticket_date: utcDate })
+        .getMany();
 
-async getCancelledTickets(): Promise<Tickets[]> {
-  try {
-    const ticketsCancelled = await this.ticketsRepository.find({
-      where: { status: TicketStatus.CANCELADO },
-      relations: ['orders', 'cashier'],
-    });
+      if (tickets.length === 0) {
+        throw new NotFoundException(`No hay tickets completados :(`);
+      }
 
-    if (!ticketsCancelled || ticketsCancelled.length === 0) {
-      throw new NotFoundException('No cancelled tickets found');
-    }
-
-    return ticketsCancelled;
-  } catch (error) {
-    console.error('Error fetching cancelled tickets:', error);
-
-    if (error instanceof NotFoundException) {
+      return tickets;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       throw error;
     }
-
-    throw new InternalServerErrorException(
-      `Unexpected error fetching cancelled tickets: ${error.message}`,
-    );
   }
-}
+
+
+
 
 }

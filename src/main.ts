@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:5123'], // your Vite frontend dev server
+    origin: ['http://localhost:5123' ], // your Vite frontend dev server
   });
 
   app.setGlobalPrefix('mks/');
@@ -17,13 +17,7 @@ async function bootstrap() {
     prefix: '/uploads/', // URL: http://localhost:3000/uploads/archivo.jpg
   });
 
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     //transform: true,
-  //     // whitelist: true,
-  //     // forbidNonWhitelisted: true, // opcional, más estricto
-  //   }),
-  // );
+
 
   const config = new DocumentBuilder()
     .setTitle('MokkaSoft Endpoints')

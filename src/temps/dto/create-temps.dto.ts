@@ -10,4 +10,8 @@ export class CreateTempsDto {
   @IsInt()
   @IsPositive()
   price: number;
+
+  @ApiProperty()
+  @IsString()
+  image: string;
 }

@@ -113,7 +113,7 @@ export class TicketsController {
 
   @Get('cancelledTickets')
   async getCancelledTickets() {
-    return this.ticketsService.getCancelledTickets();
+    return this.ticketsService.getTodayCanceledTickets();
   }
 
   @Get('cashier/:cashierId/date_range/:from/:to')
