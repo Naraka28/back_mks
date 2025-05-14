@@ -6,11 +6,13 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Orders } from './entity/orders.entity';
 import { CreateOrderDto } from './dto/create-orders.dto';
+import { Tickets } from 'src/tickets/entity/tickets.entity';
 
 @Controller('orders')
 export class OrdersController {
@@ -22,9 +24,16 @@ export class OrdersController {
   }
 
   @Post('create')
-  async createOrder(
-    @Body(new ValidationPipe({ transform: true })) orders: CreateOrderDto[],
-  ) {
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  )
+  async createOrder(@Body() orders: CreateOrderDto[]): Promise<Tickets | null> {
+    console.log(orders);
     return this.ordersServive.createOrderWithTicket(orders);
   }
 
