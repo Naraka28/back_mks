@@ -719,6 +719,7 @@ export class TicketsService {
     await this.ticketsRepository.save(ticket);
     return { message: `Pago completado de Ticket #${id}` };
   }
+
   async cancelTicket(id: number): Promise<{ message: string }> {
     const ticket = await this.ticketsRepository.findOne({
       where: {
@@ -732,4 +733,31 @@ export class TicketsService {
     await this.ticketsRepository.save(ticket);
     return { message: `Ticket #${id} cancelado` };
   }
+
+
+async getCancelledTickets(): Promise<Tickets[]> {
+  try {
+    const ticketsCancelled = await this.ticketsRepository.find({
+      where: { status: TicketStatus.CANCELADO },
+      relations: ['orders', 'cashier'],
+    });
+
+    if (!ticketsCancelled || ticketsCancelled.length === 0) {
+      throw new NotFoundException('No cancelled tickets found');
+    }
+
+    return ticketsCancelled;
+  } catch (error) {
+    console.error('Error fetching cancelled tickets:', error);
+
+    if (error instanceof NotFoundException) {
+      throw error;
+    }
+
+    throw new InternalServerErrorException(
+      `Unexpected error fetching cancelled tickets: ${error.message}`,
+    );
+  }
+}
+
 }

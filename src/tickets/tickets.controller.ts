@@ -111,6 +111,11 @@ export class TicketsController {
     return this.ticketsService.getLastYearTickets();
   }
 
+  @Get('cancelledTickets')
+  async getCancelledTickets() {
+    return this.ticketsService.getCancelledTickets();
+  }
+
   @Get('cashier/:cashierId/date_range/:from/:to')
   async getTicketsByCashierAndDateRange(
     @Param('cashierId') cashierId: number,

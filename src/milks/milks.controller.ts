@@ -50,7 +50,6 @@ export class MilksController {
          const imageUrl = `https://backmks-production.up.railway.app/uploads/milks/${image.filename}`; //ASI PUEDO ACCEDER EN EL FRONT MAS FACIL
          // const imageUrl = `/uploads/milks/${image.filename}`;
          const MilkNewData= {...milkNew, image: imageUrl };
-         console.log('MilkNewData:',MilkNewData);
          return await this.milksService.createMilk(MilkNewData);
        }
 
